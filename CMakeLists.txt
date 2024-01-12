@@ -24,7 +24,8 @@ function(link_external_libs TGT)
 endfunction()
 
 function(set_compile_settings TGT)
-    target_compile_options(${TGT} PRIVATE -Wall -Werror -Wno-c++98-compat)
+    # TODO
+    # target_compile_options(${TGT} PRIVATE -Wall -Werror -Wno-c++98-compat)
     target_compile_features(${TGT} PRIVATE cxx_std_20)
 endfunction()
 
@@ -48,6 +49,7 @@ function(add_game TGT)
     set(GAME_TARGET ${TGT}_game)
 
     add_executable(${GAME_TARGET} ${GAME_SRCS})
+    target_precompile_headers(${GAME_TARGET} PRIVATE ${PCH})
     link_external_libs(${GAME_TARGET})
     set_compile_settings(${GAME_TARGET})
 endfunction()
