@@ -4,6 +4,7 @@ project(marleeeeeey_games)
 find_package(GTest REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(ImGui-SFML CONFIG REQUIRED)
 
 add_library(commonutils INTERFACE)
 target_include_directories(commonutils INTERFACE utils)
@@ -19,7 +20,9 @@ function(add_gtest TGT)
     target_link_libraries(${UNIT_TARGET} PRIVATE ${GTEST_BOTH_LIBRARIES})
     target_link_libraries(${UNIT_TARGET} PRIVATE imgui::imgui)
     target_link_libraries(${UNIT_TARGET} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+    target_link_libraries(${UNIT_TARGET} PRIVATE ImGui-SFML::ImGui-SFML)
     target_link_libraries(${UNIT_TARGET} PRIVATE commonutils)
+    target_compile_options(${UNIT_TARGET} PRIVATE -Wall -Werror)
     target_compile_features(${UNIT_TARGET} PRIVATE cxx_std_20)
 
     add_test(
