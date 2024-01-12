@@ -11,19 +11,31 @@ target_include_directories(commonutils INTERFACE utils)
 
 enable_testing()
 
+function (link_gtest TGT)
+    target_include_directories(${TGT} PRIVATE ${GTEST_INCLUDE_DIRS})
+    target_link_libraries(${TGT} PRIVATE ${GTEST_BOTH_LIBRARIES})
+endfunction()
+
+function(link_external_libs TGT)
+    target_link_libraries(${TGT} PRIVATE imgui::imgui)
+    target_link_libraries(${TGT} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+    target_link_libraries(${TGT} PRIVATE ImGui-SFML::ImGui-SFML)
+    target_link_libraries(${TGT} PRIVATE commonutils)
+endfunction()
+
+function(set_compile_settings TGT)
+    target_compile_options(${TGT} PRIVATE -Wall -Werror -Wno-c++98-compat)
+    target_compile_features(${TGT} PRIVATE cxx_std_20)
+endfunction()
+
 function(add_gtest TGT)
     set(UNIT_TARGET ${TGT}_unit)
     set(TEST_TARGET ${TGT}_test)
 
     add_executable(${UNIT_TARGET} ${TEST_SRCS})
-    target_include_directories(${UNIT_TARGET} PRIVATE ${GTEST_INCLUDE_DIRS})
-    target_link_libraries(${UNIT_TARGET} PRIVATE ${GTEST_BOTH_LIBRARIES})
-    target_link_libraries(${UNIT_TARGET} PRIVATE imgui::imgui)
-    target_link_libraries(${UNIT_TARGET} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
-    target_link_libraries(${UNIT_TARGET} PRIVATE ImGui-SFML::ImGui-SFML)
-    target_link_libraries(${UNIT_TARGET} PRIVATE commonutils)
-    target_compile_options(${UNIT_TARGET} PRIVATE -Wall -Werror)
-    target_compile_features(${UNIT_TARGET} PRIVATE cxx_std_20)
+    link_gtest(${UNIT_TARGET})
+    link_external_libs(${UNIT_TARGET})
+    set_compile_settings(${UNIT_TARGET})
 
     add_test(
         NAME ${TEST_TARGET}
@@ -36,10 +48,8 @@ function(add_game TGT)
     set(GAME_TARGET ${TGT}_game)
 
     add_executable(${GAME_TARGET} ${GAME_SRCS})
-    target_link_libraries(${GAME_TARGET} PRIVATE imgui::imgui)
-    target_link_libraries(${GAME_TARGET} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
-    target_link_libraries(${GAME_TARGET} PRIVATE commonutils)
-    target_compile_features(${GAME_TARGET} PRIVATE cxx_std_20)
+    link_external_libs(${GAME_TARGET})
+    set_compile_settings(${GAME_TARGET})
 endfunction()
 
 add_subdirectory(arkanoid)
