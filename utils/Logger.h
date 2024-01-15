@@ -1,5 +1,6 @@
 #pragma once
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <memory>
 
@@ -8,8 +9,17 @@ class Logger
 public:
     static std::shared_ptr<spdlog::logger>& getInstance()
     {
-        static std::shared_ptr<spdlog::logger> instance = spdlog::stdout_color_mt( "logger" );
-        return instance;
+        static std::shared_ptr<spdlog::logger> combined_logger;
+
+        if ( !combined_logger )
+        {
+            std::vector<spdlog::sink_ptr> sinks;
+            sinks.push_back( std::make_shared<spdlog::sinks::stderr_color_sink_mt>() );
+            sinks.push_back( std::make_shared<spdlog::sinks::daily_file_sink_mt>( "game.log", 23, 59 ) );
+            combined_logger = std::make_shared<spdlog::logger>( "game", begin( sinks ), end( sinks ) );
+        }
+
+        return combined_logger;
     }
 };
 

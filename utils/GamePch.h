@@ -1,6 +1,6 @@
 #pragma once
 
-// ************* STL *************
+// *************** STL ***************
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -16,7 +16,7 @@
 #include <cassert>
 #include <filesystem>
 
-// ************* 3rd party *************
+// ************* 3rd party ************
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
