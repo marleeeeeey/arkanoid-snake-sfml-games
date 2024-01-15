@@ -1,6 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <imgui.h>
-#include <imgui-SFML.h>
 #include "ObjectFactory.h"
 #include "World.h"
 #include "HelperFunctions.h"
@@ -20,12 +17,11 @@ int main()
     auto world = std::make_shared<World>( objectFactory, levelGenerator, windowSize );
     auto videoMode = sf::VideoMode( static_cast<unsigned>( windowSize.x ), static_cast<unsigned>( windowSize.y ) );
     sf::RenderWindow window( videoMode, "Arkanoid" );
-    window.setFramerateLimit( 24 );
+    window.setFramerateLimit( 60 );
 
     std::ignore = ImGui::SFML::Init( window );
-
     sf::Clock deltaClock;
-    auto previousTimeStamp = deltaClock.getElapsedTime();
+    auto lastTime = deltaClock.getElapsedTime();
 
     while ( window.isOpen() )
     {
@@ -42,16 +38,17 @@ int main()
             optEvent = curEvent;
         }
 
-        ImGui::SFML::Update( window, deltaClock.restart() );
-
-        // ImGui window
-        ImGui::Begin( "Debug Window" );
-        ImGui::Button( "Click me 2" );
-        ImGui::End();
-
         auto currentTime = deltaClock.getElapsedTime();
-        auto timeDiff = currentTime - previousTimeStamp;
-        previousTimeStamp = currentTime;
+        auto timeDiff = currentTime - lastTime;
+        lastTime = currentTime;
+
+        //// ImGui window
+        // ImGui::Begin( "Debug Window" );
+        // ImGui::Button( "Click me 2" );
+        // ImGui::End();
+
+        // Game logic
+        ImGui::SFML::Update( window, timeDiff );
         world->updateState( optEvent, timeDiff );
 
         // Game rendering

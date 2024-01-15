@@ -8,9 +8,8 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
 
-
-add_library(commonutils INTERFACE)
-target_include_directories(commonutils INTERFACE utils)
+add_library(utils INTERFACE)
+target_include_directories(utils INTERFACE utils)
 
 enable_testing()
 
@@ -20,7 +19,7 @@ function (link_gtest TGT)
 endfunction()
 
 function(link_external_libs TGT)
-    target_link_libraries(${TGT} PRIVATE commonutils)
+    target_link_libraries(${TGT} PRIVATE utils)
     target_link_libraries(${TGT} PRIVATE imgui::imgui)
     target_link_libraries(${TGT} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
     target_link_libraries(${TGT} PRIVATE ImGui-SFML::ImGui-SFML)
@@ -54,7 +53,7 @@ function(add_game TGT)
     set(GAME_TARGET ${TGT}_game)
 
     add_executable(${GAME_TARGET} ${GAME_SRCS})
-    target_precompile_headers(${GAME_TARGET} PRIVATE ${PCH})
+    target_precompile_headers(${GAME_TARGET} PRIVATE ../utils/GamePch.cpp)
     link_external_libs(${GAME_TARGET})
     set_compile_settings(${GAME_TARGET})
 endfunction()
