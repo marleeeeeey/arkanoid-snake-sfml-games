@@ -1,7 +1,6 @@
 #pragma once
 #include "DefaultObject.h"
 #include "IBonusOwner.h"
-#include "IDestructible.h"
 
 enum class PlateState
 {

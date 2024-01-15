@@ -1,6 +1,4 @@
 #include "HelperFunctions.h"
-#include <cstdlib>
-#include <cassert>
 
 using namespace HelperFunctions;
 
@@ -22,8 +20,7 @@ sf::Font HelperFunctions::getDefaultFont()
     std::string fontFileName = R"(C:\Windows\Fonts\calibri.ttf)";
     if ( !font.loadFromFile( fontFileName ) )
     {
-        auto msg = "Can't open font file " + fontFileName;
-        throw std::exception( msg.c_str() );
+        throw std::runtime_error( MY_FMT( "Can't open font file '{}'", fontFileName ) );
     }
 
     return font;
@@ -62,7 +59,7 @@ sf::CircleShape HelperFunctions::createCircleShape( const float radius, const sf
 
 sf::RectangleShape HelperFunctions::extractInsideRectShape( const sf::CircleShape& circleShape )
 {
-    float insideRectSize = cos( 45 ) * circleShape.getRadius() * 2;
+    float insideRectSize = std::cos( 45.0f ) * circleShape.getRadius() * 2.0f;
     sf::RectangleShape rectShape =
         createRectangleShape( { insideRectSize, insideRectSize }, circleShape.getPosition() );
     setOriginPointInCenter( rectShape );
@@ -111,11 +108,11 @@ sf::Color HelperFunctions::getAlphaColor( sf::Color color, sf::Uint8 alpha )
 void HelperFunctions::setTextCenterTo( sf::Text& text, sf::Vector2f centerPos )
 {
     text.setPosition( centerPos );
-    auto textRect = hf::createRectangleShape( text.getGlobalBounds() );
+    auto textRect = createRectangleShape( text.getGlobalBounds() );
     auto t = textRect.getPosition();
     auto c = centerPos;
     sf::Vector2f diff = { t.x - c.x, t.y - c.y };
-    ;
+
     text.move( -diff );
 }
 
@@ -123,9 +120,7 @@ int HelperFunctions::charToInt( char ch )
 {
     if ( !isdigit( ch ) )
     {
-        std::ostringstream os;
-        os << "Can't convert char '" << ch << "' to int";
-        throw std::exception( os.str().c_str() );
+        throw std::runtime_error( MY_FMT( "Can't convert char '{}' to int", ch ) );
     }
 
     std::stringstream ss;
@@ -138,29 +133,9 @@ int HelperFunctions::charToInt( char ch )
 int HelperFunctions::randomInt( int min, int max )
 {
     assert( max - min >= 0 );
-    auto length = max - min;
-    if ( length == 0 )
-        return min;
-    auto val = rand() % length + min;
-    return val;
-}
-
-std::ostream& operator<<( std::ostream& os, const sf::Vector2f& vec )
-{
-    os << "(" << static_cast<int>( vec.x ) << ", " << static_cast<int>( vec.y ) << ")";
-    return os;
-}
-
-std::ostream& operator<<( std::ostream& os, const sf::FloatRect& rect )
-{
-    os << "pos:(" << rect.left << ", " << rect.top << "), "
-       << "size:(" << rect.width << ", " << rect.height << ")";
-    return os;
-}
-
-std::ostream& operator<<( std::ostream& os, const sf::RectangleShape& shape )
-{
-    os << "pos:(" << shape.getPosition().x << ", " << shape.getPosition().y << "), "
-       << "size:(" << shape.getSize().x << ", " << shape.getSize().y << ")";
-    return os;
+    static std::random_device rd;
+    static std::mt19937 gen( rd() );
+    std::uniform_int_distribution distribution( min, max );
+    int randomNumber = distribution( gen );
+    return randomNumber;
 }

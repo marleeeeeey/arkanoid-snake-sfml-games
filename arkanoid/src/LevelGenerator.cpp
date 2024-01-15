@@ -1,4 +1,6 @@
 #include "LevelGenerator.h"
+
+#include <utility>
 #include "IDestructible.h"
 #include "IBonusOwner.h"
 #include "HelperFunctions.h"
@@ -41,12 +43,16 @@ std::vector<Level> LevelGenerator::getSymbolLevels()
 
 void LevelGenerator::readLevelsFromTextFile()
 {
-    std::ifstream infile( "config\\levels.txt" );
+    std::string relativeConfigPath = "config\\arkanoid_config.txt";
+    std::filesystem::path fullPath = std::filesystem::absolute( relativeConfigPath );
+    std::ifstream infile( fullPath );
 
     if ( infile.fail() )
     {
-        throw std::runtime_error( "Can't load config\\levels.txt file" );
+        throw std::runtime_error( MY_FMT( "Can't load config file: {}", fullPath.string() ) );
     }
+
+    MY_LOG_FMT( info, "Config file loaded: {}", fullPath.string() );
 
     std::string line;
     Level level;
@@ -118,11 +124,12 @@ LevelGenerator::LevelGenerator( std::shared_ptr<IObjectFactory> objectFactory, s
     catch ( const std::exception& e )
     {
         loadedLevels.clear();
+        MY_LOG( warn, e.what() );
     }
 
-    m_objectFactory = objectFactory;
+    m_objectFactory = std::move( objectFactory );
     m_worldSize = worldSize;
-    float wide = 0.95;
+    float wide = 0.95f;
     m_brickZoneSize = { m_worldSize.x * wide, m_worldSize.y * 0.6f };
     m_brickZoneLeftTopPos = { m_worldSize.x * ( 1 - wide ) / 2, m_worldSize.y * 0.1f };
     m_brickGap = 5;
@@ -139,14 +146,14 @@ std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()
 {
     auto levelNumber = m_currentLevelNumber % m_levels.size();
     auto currentLevel = m_levels.at( levelNumber );
-    sf::Vector2i resolutionInBricks;
+    sf::Vector2<size_t> resolutionInBricks;
     resolutionInBricks.x = currentLevel.front().size();
     resolutionInBricks.y = currentLevel.size();
     std::vector<std::shared_ptr<IObject>> bricks;
     sf::Vector2f brickSize = { m_brickZoneSize.x / resolutionInBricks.x, m_brickZoneSize.y / resolutionInBricks.y };
-    for ( auto brickCol = 0; brickCol < resolutionInBricks.x; ++brickCol )
+    for ( size_t brickCol = 0; brickCol < resolutionInBricks.x; ++brickCol )
     {
-        for ( auto brickRow = 0; brickRow < resolutionInBricks.y; ++brickRow )
+        for ( size_t brickRow = 0; brickRow < resolutionInBricks.y; ++brickRow )
         {
             char symbol = currentLevel[brickRow][brickCol];
             if ( symbol == '.' )

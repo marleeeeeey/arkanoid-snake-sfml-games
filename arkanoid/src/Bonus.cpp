@@ -35,7 +35,7 @@ void Bonus::draw( sf::RenderWindow& window )
         sf::Text text;
         text.setFont( m_font );
         text.setFillColor( sf::Color::Black );
-        text.setString( hf::to_string( m_bonusType.value() ) );
+        text.setString( hf::toString( m_bonusType.value() ) );
         hf::setTextCenterTo( text, state().getPos() );
         window.draw( shape );
         window.draw( text );

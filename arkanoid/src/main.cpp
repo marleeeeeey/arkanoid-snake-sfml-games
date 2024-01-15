@@ -3,15 +3,17 @@
 #include "HelperFunctions.h"
 #include "LevelGenerator.h"
 
+/*
+ * TODO:
+ * 1. Add json config file for magic numbers
+ */
+
 int main()
 {
-    MY_LOG( info, "This is an info message" );
-    MY_LOG_FMT( info, "Hello, {}", "world" );
+    std::filesystem::path currentDir = std::filesystem::current_path();
+    MY_LOG_FMT( info, "Starting Arkanoid game from {}", currentDir.string() );
 
     sf::Vector2f windowSize = { 600, 800 };
-
-    MY_LOG_VAR( info, windowSize );
-
     auto objectFactory = std::make_shared<ObjectFactory>();
     auto levelGenerator = std::make_shared<LevelGenerator>( objectFactory, windowSize );
     auto world = std::make_shared<World>( objectFactory, levelGenerator, windowSize );
@@ -59,5 +61,6 @@ int main()
     }
 
     ImGui::SFML::Shutdown();
+    MY_LOG( info, "Arkanoid game finished" );
     return 0;
 }

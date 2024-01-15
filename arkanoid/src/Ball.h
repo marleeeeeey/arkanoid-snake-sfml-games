@@ -15,7 +15,7 @@ class Ball : public DefaultObject, public IDynamicObject, public IBonusOwner, pu
     std::optional<std::shared_ptr<IObject>> m_parent;
 
     void changeDirection();
-    void stealLiveFromOneDestructibleObject( std::vector<Collision>& collisions );
+    void stealLiveFromOneDestructibleObject( const std::vector<Collision>& collisions ) const;
 public:
     Ball();
     void onBumping( std::vector<Collision>& collisions ) override;

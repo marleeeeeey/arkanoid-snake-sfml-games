@@ -4,8 +4,8 @@
 
 class DefaultObject : public IObject
 {
-    std::optional<State> m_savedState;
-    State m_state;
+    std::optional<ObjectState> m_savedState;
+    ObjectState m_state;
     OnBumpingCallback m_onBumpingCallback;
 protected:
     bool haveCollisions( std::set<std::shared_ptr<IObject>> objects );
@@ -15,7 +15,7 @@ public:
     void setOnBumpingCallBack( OnBumpingCallback cb ) override;
     void calcState( std::optional<sf::Event> event, sf::Time elapsedTime ) override;
     void draw( sf::RenderWindow& window ) override;
-    State& state() override;
+    ObjectState& state() override;
     void saveState() override;
     void restoreState() override;
     bool isVisible() override;

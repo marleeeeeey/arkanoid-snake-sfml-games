@@ -2,10 +2,11 @@
 #include "HelperFunctions.h"
 
 std::vector<Collision> getCollisions(
-    std::shared_ptr<IObject> object, std::vector<std::shared_ptr<IObject>> secondaryObjects )
+    const std::shared_ptr<IObject>& object, const std::vector<std::shared_ptr<IObject>>& secondaryObjects )
 {
+    // TODO: improve it
     std::vector<Collision> collisions;
-    for ( auto secondaryObject : secondaryObjects )
+    for ( const auto& secondaryObject : secondaryObjects )
     {
         if ( object == secondaryObject )
             continue;
@@ -36,7 +37,7 @@ void DefaultObject::draw( sf::RenderWindow& window )
     // do nothing
 }
 
-State& DefaultObject::state()
+ObjectState& DefaultObject::state()
 {
     return m_state;
 }
@@ -65,7 +66,7 @@ void DefaultObject::setOnBumpingCallBack( OnBumpingCallback cb )
 bool DefaultObject::haveCollisions( std::set<std::shared_ptr<IObject>> objectsSet )
 {
     std::vector<std::shared_ptr<IObject>> objects;
-    std::copy( objectsSet.begin(), objectsSet.end(), std::back_inserter( objects ) );
+    std::ranges::copy( objectsSet, std::back_inserter( objects ) );
     auto collisions = getCollisions( shared_from_this(), objects );
     return !collisions.empty();
 }

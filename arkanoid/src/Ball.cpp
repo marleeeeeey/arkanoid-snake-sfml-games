@@ -15,9 +15,9 @@ float getArea( const sf::Vector2f& size )
 
 Collision getBiggestCollision( std::vector<Collision>& collisions )
 {
-    std::sort(
-        collisions.begin(), collisions.end(),
-        []( Collision& lhs, Collision& rhs )
+    std::ranges::sort(
+        collisions,
+        []( const Collision& lhs, const Collision& rhs )
         {
             auto areaLhs = getArea( lhs.getCollisionRect().getSize() );
             auto areaRhs = getArea( rhs.getCollisionRect().getSize() );
@@ -42,10 +42,10 @@ void Ball::changeDirection()
     else
     {
         m_speed.reflectFromVertical();
-    };
+    }
 }
 
-void Ball::stealLiveFromOneDestructibleObject( std::vector<Collision>& collisions )
+void Ball::stealLiveFromOneDestructibleObject( const std::vector<Collision>& collisions ) const
 {
     std::vector<std::shared_ptr<IDestructible>> desctructibleObjects;
     for ( auto collision : collisions )
@@ -136,7 +136,7 @@ void Ball::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 void Ball::draw( sf::RenderWindow& window )
 {
     float rectSide = state().getCollisionRect().getSize().x;
-    float radius = rectSide / sqrt( 2 );
+    float radius = rectSide / std::sqrt( 2.0f );
     auto circleShape = hf::createCircleShape( radius, state().getPos() );
 
     sf::Color shapeColor;

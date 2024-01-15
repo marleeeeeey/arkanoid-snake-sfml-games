@@ -6,7 +6,7 @@
 class Logger
 {
 public:
-    static inline std::shared_ptr<spdlog::logger>& getInstance()
+    static std::shared_ptr<spdlog::logger>& getInstance()
     {
         static std::shared_ptr<spdlog::logger> instance = spdlog::stdout_color_mt( "logger" );
         return instance;
@@ -19,3 +19,5 @@ public:
     Logger::getInstance()->severity( fmt::format( fmt_string, __VA_ARGS__ ) )
 
 #define MY_LOG_VAR( severity, var ) MY_LOG_FMT( severity, "{} = {}", #var, var )
+
+#define MY_FMT( fmt_string, ... ) fmt::format( fmt_string, __VA_ARGS__ )

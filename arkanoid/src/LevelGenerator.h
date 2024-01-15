@@ -20,9 +20,9 @@ class LevelGenerator : public ILevelGenerator
 
     std::vector<Level> getSymbolLevels();
     void readLevelsFromTextFile();
-    void everyLevelLinesHasTheSameLength( const std::vector<Level>& levels );
-    void levelsHaveCorrectBonusLetters( const std::vector<Level>& levels );
-    void checkLevels( const std::vector<Level>& levels );
+    static void everyLevelLinesHasTheSameLength( const std::vector<Level>& levels );
+    static void levelsHaveCorrectBonusLetters( const std::vector<Level>& levels );
+    static void checkLevels( const std::vector<Level>& levels );
 public:
     LevelGenerator( std::shared_ptr<IObjectFactory> objectFactory, sf::Vector2f worldSize );
     void changeLevel() override;

@@ -1,16 +1,15 @@
 #include "MathVector.h"
-#include <cmath>
 #include "HelperFunctions.h"
 
 float radToDeg( float radians )
 {
-    auto degrees = radians * ( 180.0 / std::numbers::pi_v<float> );
+    auto degrees = radians * ( 180.0f / std::numbers::pi_v<float> );
     return degrees;
 }
 
 float degToRad( float degrees )
 {
-    auto radians = degrees / ( 180.0 / std::numbers::pi_v<float> );
+    auto radians = degrees / ( 180.0f / std::numbers::pi_v<float> );
     return radians;
 }
 
@@ -20,10 +19,10 @@ MathVector::MathVector()
     setAngle( 0 );
 }
 
-MathVector::MathVector( float angle_deg, float size )
+MathVector::MathVector( float angleDeg, float size )
 {
     setSize( size );
-    setAngle( angle_deg );
+    setAngle( angleDeg );
 }
 
 MathVector::MathVector( sf::Vector2f coordinates )
@@ -42,19 +41,25 @@ void MathVector::setSize( float size )
     m_size = size;
 }
 
-float MathVector::getSize()
+float MathVector::getSize() const
 {
     return m_size;
 }
 
-void MathVector::setAngle( float angle_deg )
+void MathVector::setAngle( float angleDeg )
 {
-    int int_angle_deg = static_cast<int>( angle_deg );
-    float offset = angle_deg - int_angle_deg;
-    m_angle_deg = int_angle_deg % 360 + offset;
+    while ( angleDeg >= 360.0f )
+    {
+        angleDeg -= 360.0f;
+    }
+    while ( angleDeg < 0.0f )
+    {
+        angleDeg += 360.0f;
+    }
+    m_angle_deg = angleDeg;
 }
 
-float MathVector::getAngle()
+float MathVector::getAngle() const
 {
     return m_angle_deg;
 }
@@ -85,7 +90,7 @@ void MathVector::setCoordinates( sf::Vector2f coordinate )
     }
     else
     {
-        auto radians = atan( abs( y ) / abs( x ) );
+        auto radians = std::atan( std::abs( y ) / std::abs( x ) );
         auto deg = radToDeg( radians );
         if ( x > 0 && y > 0 )
             setAngle( deg );
@@ -96,11 +101,11 @@ void MathVector::setCoordinates( sf::Vector2f coordinate )
         else if ( x < 0 && y < 0 )
             setAngle( 180 + deg );
         else
-            throw std::exception( "MathVector::setCoordinates angle error" );
+            throw std::runtime_error( "MathVector::setCoordinates angle error" );
     }
 }
 
-sf::Vector2f MathVector::getCoordinate()
+sf::Vector2f MathVector::getCoordinate() const
 {
     auto radians = degToRad( m_angle_deg );
     sf::Vector2f coord;
@@ -109,9 +114,9 @@ sf::Vector2f MathVector::getCoordinate()
     return coord;
 }
 
-void MathVector::rotate( float angle_deg )
+void MathVector::rotate( float angleDeg )
 {
-    setAngle( getAngle() + angle_deg );
+    setAngle( getAngle() + angleDeg );
 }
 
 void MathVector::reflectFromVertical()

@@ -1,4 +1,6 @@
 #include "World.h"
+
+#include <utility>
 #include "HelperFunctions.h"
 #include "IBonusOwner.h"
 #include "IDynamicObject.h"
@@ -15,7 +17,7 @@ std::vector<std::shared_ptr<IObject>> World::getAllObjects()
     return objects;
 }
 
-bool World::isObjectOutOfBorder( std::shared_ptr<IObject> object )
+bool World::isObjectOutOfBorder( const std::shared_ptr<IObject>& object ) const
 {
     auto objectPos = object->state().getPos();
     if ( objectPos.x < 0 || objectPos.y < 0 || objectPos.x > m_windowSize.x || objectPos.y > m_windowSize.y )
@@ -27,11 +29,11 @@ bool World::isObjectOutOfBorder( std::shared_ptr<IObject> object )
 }
 
 World::World(
-    std::shared_ptr<IObjectFactory> objectFactory, std::shared_ptr<ILevelGenerator> levelGenerator,
+    const std::shared_ptr<IObjectFactory>& objectFactory, std::shared_ptr<ILevelGenerator> levelGenerator,
     sf::Vector2f windowSize )
 {
     m_objectFactory = objectFactory;
-    m_levelGenerator = levelGenerator;
+    m_levelGenerator = std::move( levelGenerator );
     m_windowSize = windowSize;
     m_font = hf::getDefaultFont();
     m_isGameOver = true;
@@ -47,7 +49,7 @@ void World::initCollisionProcessors()
     m_collisionBuckets.push_back( { m_balls, m_plates, {} } );
     m_collisionBuckets.emplace_back(
         m_balls, m_bricks,
-        [&]( std::shared_ptr<IObject> thisObject, std::vector<Collision>& collisions )
+        [&]( const std::shared_ptr<IObject>& thisObject, const std::vector<Collision>& collisions )
         {
             for ( auto collision : collisions )
             {
@@ -65,7 +67,7 @@ void World::initCollisionProcessors()
     m_collisionBuckets.push_back( { m_plates, m_walls, {} } );
     m_collisionBuckets.emplace_back(
         m_plates, m_bonuses,
-        [&]( std::shared_ptr<IObject> thisObject, std::vector<Collision>& collisions )
+        [&]( const std::shared_ptr<IObject>& thisObject, std::vector<Collision>& collisions )
         {
             for ( auto& collision : collisions )
             {
@@ -93,7 +95,7 @@ void World::initCollisionProcessors()
                 {
                     plate->bonusType() = {};
 
-                    for ( auto ball : m_balls )
+                    for ( const auto& ball : m_balls )
                     {
                         auto bonusBall = std::dynamic_pointer_cast<IBonusOwner>( ball );
                         bonusBall->bonusType() = {};
@@ -112,7 +114,7 @@ void World::initCollisionProcessors()
 
                 if ( plate->bonusType() && plate->bonusType().value() == BonusType::DecreaseBallSpeed )
                 {
-                    for ( auto ball : m_balls )
+                    for ( const auto& ball : m_balls )
                     {
                         auto bonusBall = std::dynamic_pointer_cast<IBonusOwner>( ball );
                         bonusBall->bonusType() = plate->bonusType().value();
@@ -124,12 +126,12 @@ void World::initCollisionProcessors()
         } );
 }
 
-std::vector<std::shared_ptr<IObject>> World::generateNewBalls( int ballsNumber )
+std::vector<std::shared_ptr<IObject>> World::generateNewBalls( size_t ballsNumber ) const
 {
     std::vector<std::shared_ptr<IObject>> createdBalls;
     while ( !m_balls.empty() && createdBalls.size() < ballsNumber )
     {
-        for ( auto existingBall : m_balls )
+        for ( const auto& existingBall : m_balls )
         {
             auto createdBall = existingBall->createCopyFromThis();
             auto createdBallDynamicObject = std::dynamic_pointer_cast<IDynamicObject>( createdBall );
@@ -145,19 +147,20 @@ std::vector<std::shared_ptr<IObject>> World::generateNewBalls( int ballsNumber )
 
 void World::initPlates()
 {
-    float plateKoefThinkness = 0.025;
-    float plateKoefSize = 0.2;
+    float plateKoefThinkness = 0.025f;
+    float plateKoefSize = 0.2f;
     auto plate = m_objectFactory->createObject( ObjectType::Plate );
     plate->state().setSize( { m_windowSize.x * plateKoefSize, m_windowSize.y * plateKoefThinkness } );
     plate->state().setPos( { m_windowSize.x / 2, m_windowSize.y * ( 1 - plateKoefThinkness ) } );
-    plate->setOnBumpingCallBack( [&]( auto, std::vector<Collision>& collisions ) { m_scopes += collisions.size(); } );
+    plate->setOnBumpingCallBack( [&]( auto, const std::vector<Collision>& collisions )
+                                 { m_scopes += collisions.size(); } );
     m_plates.push_back( plate );
 }
 
 void World::initWalls()
 {
-    float wallKoefThinkness = 0.02;
-    float wallTopOffset = 0.035;
+    float wallKoefThinkness = 0.02f;
+    float wallTopOffset = 0.035f;
     sf::Vector2f verticalWallSize = { m_windowSize.x * wallKoefThinkness, m_windowSize.y * ( 1 - wallTopOffset ) };
     auto leftWall = m_objectFactory->createObject( ObjectType::Wall );
     leftWall->state().setCollisionRect(
@@ -203,9 +206,8 @@ void World::generate()
 
 void World::removeObjectsIfDestroyed( std::vector<std::shared_ptr<IObject>>& objects )
 {
-    auto removeIt = std::remove_if(
-        objects.begin(), objects.end(),
-        []( std::shared_ptr<IObject> object ) { return object->state().getDestroyFlag(); } );
+    auto removeIt =
+        std::ranges::remove_if( objects, []( auto object ) { return object->state().getDestroyFlag(); } ).begin();
 
     objects.erase( removeIt, objects.end() );
 }
@@ -231,10 +233,10 @@ void World::removeAllObjects()
 void World::updateGameOverStatus()
 {
     auto isAllBallsOutOfBorder =
-        std::none_of( m_balls.begin(), m_balls.end(), [&]( auto ball ) { return !isObjectOutOfBorder( ball ); } );
+        std::ranges::none_of( m_balls, [&]( auto ball ) { return !isObjectOutOfBorder( ball ); } );
 
-    auto isAllBricksHaveSuperLive = std::all_of(
-        m_bricks.begin(), m_bricks.end(),
+    auto isAllBricksHaveSuperLive = std::ranges::all_of(
+        m_bricks,
         [&]( auto brick )
         {
             auto destructibleBall = std::dynamic_pointer_cast<IDestructible>( brick );
@@ -244,9 +246,8 @@ void World::updateGameOverStatus()
 
     if ( m_bricks.empty() || isAllBricksHaveSuperLive )
     {
-        std::for_each(
-            m_balls.begin(), m_balls.end(),
-            []( std::shared_ptr<IObject> ballObject ) { ballObject->state().setDestroyFlag( true ); } );
+        std::ranges::for_each(
+            m_balls, []( const std::shared_ptr<IObject>& ballObject ) { ballObject->state().setDestroyFlag( true ); } );
 
         if ( m_bonuses.empty() )
         {
@@ -270,7 +271,7 @@ void World::onEveryUpdate()
     auto plateBonus = plate->bonusType();
     if ( plateBonus && plateBonus.value() == BonusType::RenewableBalls )
     {
-        int countRenewableBalls = 3;
+        size_t countRenewableBalls = 3;
         if ( m_balls.size() < countRenewableBalls )
         {
             int ballsNumber = countRenewableBalls - m_balls.size();
@@ -304,7 +305,7 @@ void World::updateState( std::optional<sf::Event> event, sf::Time elapsedTime )
     }
     removeAllDestroyedObjects();
 
-    for ( auto object : getAllObjects() )
+    for ( const auto& object : getAllObjects() )
     {
         object->calcState( event, elapsedTime );
         if ( isObjectOutOfBorder( object ) )
@@ -319,18 +320,19 @@ void World::updateState( std::optional<sf::Event> event, sf::Time elapsedTime )
 
 void World::draw( sf::RenderWindow& window )
 {
-    for ( auto object : getAllObjects() )
+    for ( const auto& object : getAllObjects() )
     {
         object->draw( window );
     }
 
     sf::Text text;
     text.setFont( m_font );
-    text.setScale( 0.7, 0.7 );
-    std::ostringstream ss;
-    ss << " Scopes: " << m_scopes << " Ball count: " << m_balls.size() << " FPS: " << (int)( 1000 / m_elapsedTime_ms );
+    text.setScale( 0.7f, 0.7f );
 
-    text.setString( ss.str() );
+    auto fps = m_elapsedTime_ms ? 1000 / m_elapsedTime_ms : 0;
+    std::string info = fmt::format( "Scopes: {} Ball count: {} FPS: {}", m_scopes, m_balls.size(), fps );
+
+    text.setString( info );
     window.draw( text );
 
     if ( m_pauseMenu->isVisible() )

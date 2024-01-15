@@ -56,6 +56,7 @@ function(add_game TGT)
     target_precompile_headers(${GAME_TARGET} PRIVATE ../utils/GamePch.cpp)
     link_external_libs(${GAME_TARGET})
     set_compile_settings(${GAME_TARGET})
+    configure_file(${CMAKE_SOURCE_DIR}/${TGT}/config/${TGT}_config.txt ${CMAKE_BINARY_DIR}/${TGT}/config/${TGT}_config.txt COPYONLY)
 endfunction()
 
 add_subdirectory(arkanoid)

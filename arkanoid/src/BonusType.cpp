@@ -18,15 +18,11 @@ BonusType getBonusTypeFromInt( int number )
 
 BonusType getBonusTypeFromChar( char ch )
 {
-    for ( const auto& [type, c] : bonusMap )
-    {
-        if ( c == ch )
-            return type;
-    }
+    auto foundIt = std::ranges::find_if( bonusMap, [ch]( const auto& pair ) { return pair.second == ch; } );
+    if ( foundIt != bonusMap.end() )
+        return foundIt->first;
 
-    std::ostringstream os;
-    os << "Can't convert char '" << ch << "' to BonusType";
-    throw std::exception( os.str().c_str() );
+    throw std::runtime_error( MY_FMT( "Can't convert char '{}` to BonusType", ch ) );
 }
 
 std::ostream& operator<<( std::ostream& os, const BonusType& type )

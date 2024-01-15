@@ -1,5 +1,5 @@
 #pragma once
-#include "State.h"
+#include "ObjectState.h"
 #include "Collision.h"
 
 using OnBumpingCallback =
@@ -17,7 +17,7 @@ public:
     virtual void draw( sf::RenderWindow& window ) = 0;
     virtual void saveState() = 0;
     virtual void restoreState() = 0;
-    virtual State& state() = 0;
+    virtual ObjectState& state() = 0;
     virtual std::shared_ptr<IObject> createCopyFromThis() = 0;
     virtual bool isVisible() = 0;
 };

@@ -42,10 +42,9 @@ void Plate::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTim
         m_plateState = PlateState::Attack;
     }
 
-    int speed_pxps = 600;
+    float speed_pxps = 600;
     float elapsedSec = elapsedTime.asSeconds();
-    if ( elapsedSec > 0.1 )
-        elapsedSec = 0.1;
+    elapsedSec = std::min( elapsedSec, 0.1f );
     float absOffset = speed_pxps * elapsedSec;
     float absDampingOffset = absOffset * 0.08f;
 
@@ -56,7 +55,7 @@ void Plate::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTim
             m_offset -= absDampingOffset;
         else if ( m_offset < 0 )
             m_offset += absDampingOffset;
-        if ( m_offset != 0 && abs( m_offset ) < absDampingOffset )
+        if ( m_offset != 0.0f && abs( m_offset ) < absDampingOffset )
             m_offset = 0;
         break;
     case PlateState::MoveLeft:
@@ -64,6 +63,9 @@ void Plate::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTim
         break;
     case PlateState::MoveRight:
         m_offset = absOffset;
+        break;
+    case PlateState::Attack:
+        // TODO
         break;
     }
 }
@@ -96,7 +98,7 @@ void Plate::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
             m_originalSize = size;
 
         size = m_originalSize.value();
-        size.x *= 1.5;
+        size.x *= 1.5f;
         state().setSize( size );
     }
     else
@@ -105,7 +107,7 @@ void Plate::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
             state().setSize( m_originalSize.value() );
     }
 
-    for ( auto ball : m_magnetBalls )
+    for ( const auto& ball : m_magnetBalls )
     {
         auto ballPos = ball->state().getPos();
         ballPos += shift;
@@ -124,14 +126,14 @@ void Plate::draw( sf::RenderWindow& window )
         sf::Text text;
         sf::Font font = hf::getDefaultFont();
         text.setFont( font );
-        text.setString( hf::to_string( m_bonusType.value() ) );
+        text.setString( hf::toString( m_bonusType.value() ) );
         text.setFillColor( sf::Color::Blue );
         hf::setTextCenterTo( text, state().getPos() );
         window.draw( text );
     }
 }
 
-float getShiftCoef( std::shared_ptr<IObject> plate, std::shared_ptr<IObject> obj )
+float getShiftCoef( const std::shared_ptr<IObject>& plate, const std::shared_ptr<IObject>& obj )
 {
     auto ballCenter = obj->state().getPos();
     auto plateCenter = plate->state().getPos();
@@ -159,16 +161,16 @@ void Plate::onBumping( std::vector<Collision>& collisions )
             ball->speed().rotate( angleShift );
             if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_plateState != PlateState::Attack )
             {
-                auto result = m_magnetBalls.insert( obj );
-                if ( result.second )
+                auto [_, success] = m_magnetBalls.insert( obj );
+                if ( success )
                 {
-                    auto ball = std::dynamic_pointer_cast<IHaveParent>( obj );
-                    ball->setParent( shared_from_this() );
+                    auto localBall = std::dynamic_pointer_cast<IHaveParent>( obj );
+                    localBall->setParent( shared_from_this() );
                 }
             }
             else
             {
-                for ( auto magnetBall : m_magnetBalls )
+                for ( const auto& magnetBall : m_magnetBalls )
                 {
                     auto childBall = std::dynamic_pointer_cast<IHaveParent>( magnetBall );
                     childBall->removeParent();

@@ -1,9 +1,11 @@
 #include "Collision.h"
 
+#include <utility>
+
 Collision::Collision( std::shared_ptr<IObject> object, sf::RectangleShape collisionRect )
 {
-    m_object = object;
-    m_collisionRect = collisionRect;
+    m_object = std::move( object );
+    m_collisionRect = std::move( collisionRect );
 }
 
 std::shared_ptr<IObject> Collision::getObject()
