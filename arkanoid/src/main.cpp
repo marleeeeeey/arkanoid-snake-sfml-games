@@ -8,13 +8,19 @@
 
 int main()
 {
+    MY_LOG( info, "This is an info message" );
+    MY_LOG_FMT( info, "Hello, {}", "world" );
+
     sf::Vector2f windowSize = { 600, 800 };
+
+    MY_LOG_VAR( info, windowSize );
+
     auto objectFactory = std::make_shared<ObjectFactory>();
     auto levelGenerator = std::make_shared<LevelGenerator>( objectFactory, windowSize );
     auto world = std::make_shared<World>( objectFactory, levelGenerator, windowSize );
     auto videoMode = sf::VideoMode( static_cast<unsigned>( windowSize.x ), static_cast<unsigned>( windowSize.y ) );
     sf::RenderWindow window( videoMode, "Arkanoid" );
-    window.setFramerateLimit( 60 );
+    window.setFramerateLimit( 24 );
 
     std::ignore = ImGui::SFML::Init( window );
 
@@ -45,7 +51,6 @@ int main()
 
         auto currentTime = deltaClock.getElapsedTime();
         auto timeDiff = currentTime - previousTimeStamp;
-        // TODO fix issue with big diffTime
         previousTimeStamp = currentTime;
         world->updateState( optEvent, timeDiff );
 

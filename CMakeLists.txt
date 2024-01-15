@@ -5,6 +5,9 @@ find_package(GTest REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
+
 
 add_library(commonutils INTERFACE)
 target_include_directories(commonutils INTERFACE utils)
@@ -17,10 +20,12 @@ function (link_gtest TGT)
 endfunction()
 
 function(link_external_libs TGT)
+    target_link_libraries(${TGT} PRIVATE commonutils)
     target_link_libraries(${TGT} PRIVATE imgui::imgui)
     target_link_libraries(${TGT} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
     target_link_libraries(${TGT} PRIVATE ImGui-SFML::ImGui-SFML)
-    target_link_libraries(${TGT} PRIVATE commonutils)
+    target_link_libraries(${TGT} PRIVATE spdlog::spdlog)
+    target_link_libraries(${TGT} PRIVATE JsonCpp::JsonCpp)
 endfunction()
 
 function(set_compile_settings TGT)

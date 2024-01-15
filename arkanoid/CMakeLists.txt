@@ -1,11 +1,12 @@
-set(TEST_SRCS
-    main.cpp
-)
+# set(TEST_SRCS
+#     main.cpp
+# )
+# add_gtest(arkanoid)
+
 set(PCH
-    arkanoid_pch.cpp
+    src/ArkanoidPch.cpp
 )
 
-file(GLOB GAME_SRCS *.cpp)
+file(GLOB GAME_SRCS src/*.cpp)
 
-add_gtest(arkanoid)
 add_game(arkanoid)
