@@ -1,9 +1,6 @@
 #include "LevelGenerator.h"
-
-#include <utility>
 #include "IDestructible.h"
 #include "IBonusOwner.h"
-#include "HelperFunctions.h"
 
 std::vector<Level> LevelGenerator::getSymbolLevels()
 {
@@ -31,12 +28,12 @@ std::vector<Level> LevelGenerator::getSymbolLevels()
 
     if ( loadedLevels.empty() )
     {
-        m_currentLevelNumber += hf::randomInt( 0, standartLevels.size() - 1 );
+        m_currentLevelNumber += randomInt( 0, standartLevels.size() - 1 );
         return standartLevels;
     }
     else
     {
-        m_currentLevelNumber += hf::randomInt( 0, loadedLevels.size() - 1 );
+        m_currentLevelNumber += randomInt( 0, loadedLevels.size() - 1 );
         return loadedLevels;
     }
 }
@@ -58,7 +55,7 @@ void LevelGenerator::readLevelsFromTextFile()
     Level level;
     while ( std::getline( infile, line ) )
     {
-        hf::trim( line );
+        trim( line );
         if ( line.empty() )
         {
             if ( !level.empty() )
@@ -139,7 +136,7 @@ LevelGenerator::LevelGenerator( std::shared_ptr<IObjectFactory> objectFactory, s
 
 void LevelGenerator::changeLevel()
 {
-    m_currentLevelNumber += hf::randomInt( 0, m_levels.size() - 1 );
+    m_currentLevelNumber += randomInt( 0, m_levels.size() - 1 );
 }
 
 std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()
@@ -168,7 +165,7 @@ std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()
             auto bonus = std::dynamic_pointer_cast<IBonusOwner>( obj );
             if ( std::isdigit( symbol ) )
             {
-                int number = hf::charToInt( symbol );
+                int number = fromChar<int>( symbol );
                 if ( number == 0 )
                     brick->lives() = {};
                 else

@@ -1,6 +1,5 @@
 #include "ObjectFactory.h"
 #include "World.h"
-#include "HelperFunctions.h"
 #include "LevelGenerator.h"
 
 /*
@@ -13,8 +12,8 @@ int main()
     std::filesystem::path currentDir = std::filesystem::current_path();
     MY_LOG_FMT( info, "Starting Arkanoid game from {}", currentDir.string() );
 
-    auto windowWidth = getConfig<float>( "window.width" );
-    auto windowHeight = getConfig<float>( "window.height" );
+    auto windowWidth = getConfig<float>( "window.width", 600 );
+    auto windowHeight = getConfig<float>( "window.height", 800 );
 
     sf::Vector2f windowSize = { windowWidth, windowHeight };
     auto objectFactory = std::make_shared<ObjectFactory>();
@@ -22,7 +21,7 @@ int main()
     auto world = std::make_shared<World>( objectFactory, levelGenerator, windowSize );
     auto videoMode = sf::VideoMode( static_cast<unsigned>( windowSize.x ), static_cast<unsigned>( windowSize.y ) );
     sf::RenderWindow window( videoMode, "Arkanoid" );
-    window.setFramerateLimit( getConfig<int>( "frameRate" ) );
+    window.setFramerateLimit( getConfig<int>( "window.frameRate", 60 ) );
 
     std::ignore = ImGui::SFML::Init( window );
     sf::Clock deltaClock;
@@ -36,7 +35,7 @@ int main()
         while ( window.pollEvent( curEvent ) )
         {
             ImGui::SFML::ProcessEvent( curEvent );
-            if ( curEvent.type == sf::Event::Closed || hf::isKeyPressed( curEvent, sf::Keyboard::Escape ) )
+            if ( curEvent.type == sf::Event::Closed || isKeyPressed( curEvent, sf::Keyboard::Escape ) )
             {
                 window.close();
             }

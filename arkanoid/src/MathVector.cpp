@@ -1,5 +1,7 @@
 #include "MathVector.h"
-#include "HelperFunctions.h"
+
+namespace
+{
 
 float radToDeg( float radians )
 {
@@ -12,6 +14,8 @@ float degToRad( float degrees )
     auto radians = degrees / ( 180.0f / std::numbers::pi_v<float> );
     return radians;
 }
+
+} // namespace
 
 MathVector::MathVector()
 {
@@ -70,18 +74,18 @@ void MathVector::setCoordinates( sf::Vector2f coordinate )
     auto y = coordinate.y;
     setSize( sqrt( x * x + y * y ) );
 
-    if ( hf::isEqual( x, 0.0f ) )
+    if ( isEqual( x, 0.0f ) )
     {
-        if ( hf::isEqual( y, 0.0f ) )
+        if ( isEqual( y, 0.0f ) )
             setAngle( 0 );
         else if ( y > 0 )
             setAngle( 90 );
         else
             setAngle( -90 );
     }
-    else if ( hf::isEqual( y, 0.0f ) )
+    else if ( isEqual( y, 0.0f ) )
     {
-        if ( hf::isEqual( x, 0.0f ) )
+        if ( isEqual( x, 0.0f ) )
             setAngle( 0 );
         if ( x > 0 )
             setAngle( 0 );

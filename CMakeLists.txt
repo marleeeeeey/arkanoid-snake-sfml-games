@@ -11,9 +11,6 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
 
-add_library(utils INTERFACE)
-target_include_directories(utils INTERFACE utils)
-
 function (link_gtest TGT)
     target_include_directories(${TGT} PRIVATE ${GTEST_INCLUDE_DIRS})
     target_link_libraries(${TGT} PRIVATE ${GTEST_BOTH_LIBRARIES})
@@ -25,7 +22,6 @@ function(link_external_libs TGT)
     target_link_libraries(${TGT} PRIVATE ImGui-SFML::ImGui-SFML)
     target_link_libraries(${TGT} PRIVATE spdlog::spdlog)
     target_link_libraries(${TGT} PRIVATE JsonCpp::JsonCpp)
-    target_link_libraries(${TGT} PRIVATE utils)
 endfunction()
 
 
@@ -43,6 +39,17 @@ function(copy_game_configs TGT)
 endfunction()
 
 # ********************************* SPECIFIC HELPERS *********************************
+
+function(add_static_library TGT)
+    set(STATIC_LIB_TARGET ${TGT})
+    set(STATIC_LIB_PCH ${PCH})
+
+    add_library(${STATIC_LIB_TARGET} STATIC ${STATIC_SRCS})
+    target_include_directories(${STATIC_LIB_TARGET} PUBLIC ${CMAKE_SOURCE_DIR}/${TGT}/include)
+    link_external_libs(${STATIC_LIB_TARGET})
+    target_precompile_headers(${STATIC_LIB_TARGET} PRIVATE ${STATIC_LIB_PCH})
+    set_compile_settings(${STATIC_LIB_TARGET})
+endfunction()
 
 function(add_gtest TGT)
     set(UNIT_TARGET ${TGT}_unit)
@@ -62,14 +69,17 @@ endfunction()
 
 function(add_game TGT)
     set(GAME_TARGET ${TGT}_game)
+    set(GAME_PCH ${PCH})
 
     add_executable(${GAME_TARGET} ${GAME_SRCS})
-    target_precompile_headers(${GAME_TARGET} PRIVATE ../utils/GamePch.cpp)
+    target_precompile_headers(${GAME_TARGET} PRIVATE ${GAME_PCH})
     link_external_libs(${GAME_TARGET})
+    target_link_libraries(${GAME_TARGET} PRIVATE utils)
     set_compile_settings(${GAME_TARGET})
     copy_game_configs(${TGT})
 endfunction()
 
+add_subdirectory(utils)
 add_subdirectory(arkanoid)
 
 install()

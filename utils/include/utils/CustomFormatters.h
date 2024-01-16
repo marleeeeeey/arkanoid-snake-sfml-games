@@ -5,7 +5,7 @@
 #include <SFML/System/Vector2.hpp>
 
 template <typename T>
-struct fmt::formatter<sf::Vector2<T>> : formatter<std::string_view>
+struct fmt::formatter<sf::Vector2<T>> : fmt::formatter<std::string_view>
 {
     template <typename FormatContext>
     auto format( const sf::Vector2<T>& vector, FormatContext& ctx )
@@ -15,7 +15,7 @@ struct fmt::formatter<sf::Vector2<T>> : formatter<std::string_view>
 };
 
 template <>
-struct fmt::formatter<sf::Time> : formatter<std::string_view>
+struct fmt::formatter<sf::Time> : fmt::formatter<std::string_view>
 {
     template <typename FormatContext>
     auto format( const sf::Time& time, FormatContext& ctx )

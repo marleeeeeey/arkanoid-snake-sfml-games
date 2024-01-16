@@ -1,5 +1,4 @@
 #include "Brick.h"
-#include "HelperFunctions.h"
 #include "IObjectFactory.h"
 
 Brick::Brick()

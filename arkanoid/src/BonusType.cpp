@@ -1,13 +1,21 @@
 #include "BonusType.h"
-#include <map>
-#include <sstream>
 
-const std::map<BonusType, char> bonusMap{
-    { BonusType::RenewableBalls, 'R' }, { BonusType::MultiBalls, 'M' },   { BonusType::AddPlateLive, 'A' },
-    { BonusType::LongPlate, 'L' },      { BonusType::MagnetPaddle, 'G' }, { BonusType::DisableBonuses, 'D' },
-    { BonusType::AroundWall, 'W' },     { BonusType::NextLevel, 'N' },    { BonusType::DecreaseBallSpeed, 'S' },
-    { BonusType::FireBall, 'F' },
-};
+namespace
+{
+
+const std::map<BonusType, char>& getBonusMap()
+{
+    static const std::map<BonusType, char> bonusMap = {
+        { BonusType::RenewableBalls, 'R' }, { BonusType::MultiBalls, 'M' },   { BonusType::AddPlateLive, 'A' },
+        { BonusType::LongPlate, 'L' },      { BonusType::MagnetPaddle, 'G' }, { BonusType::DisableBonuses, 'D' },
+        { BonusType::AroundWall, 'W' },     { BonusType::NextLevel, 'N' },    { BonusType::DecreaseBallSpeed, 'S' },
+        { BonusType::FireBall, 'F' },
+    };
+
+    return bonusMap;
+}
+
+} // namespace
 
 BonusType getBonusTypeFromInt( int number )
 {
@@ -18,8 +26,8 @@ BonusType getBonusTypeFromInt( int number )
 
 BonusType getBonusTypeFromChar( char ch )
 {
-    auto foundIt = std::ranges::find_if( bonusMap, [ch]( const auto& pair ) { return pair.second == ch; } );
-    if ( foundIt != bonusMap.end() )
+    auto foundIt = std::ranges::find_if( getBonusMap(), [ch]( const auto& pair ) { return pair.second == ch; } );
+    if ( foundIt != getBonusMap().end() )
         return foundIt->first;
 
     throw std::runtime_error( MY_FMT( "Can't convert char '{}` to BonusType", ch ) );
@@ -27,6 +35,6 @@ BonusType getBonusTypeFromChar( char ch )
 
 std::ostream& operator<<( std::ostream& os, const BonusType& type )
 {
-    os << bonusMap.at( type );
+    os << getBonusMap().at( type );
     return os;
 }

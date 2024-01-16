@@ -1,5 +1,4 @@
 #include "DefaultObject.h"
-#include "HelperFunctions.h"
 
 std::vector<Collision> getCollisions(
     const std::shared_ptr<IObject>& object, const std::vector<std::shared_ptr<IObject>>& secondaryObjects )
@@ -11,8 +10,8 @@ std::vector<Collision> getCollisions(
         if ( object == secondaryObject )
             continue;
 
-        auto collision = hf::getIntersectRectShape(
-            object->state().getCollisionRect(), secondaryObject->state().getCollisionRect() );
+        auto collision =
+            getIntersectRectShape( object->state().getCollisionRect(), secondaryObject->state().getCollisionRect() );
         if ( collision )
         {
             collisions.emplace_back( secondaryObject, collision.value() );

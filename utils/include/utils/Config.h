@@ -1,5 +1,7 @@
 #pragma once
-#include "JsonLoader.h"
+#include <utils/JsonLoader.h>
+#include <utils/Logger.h>
+#include <spdlog/spdlog.h>
 
 class Config
 {
@@ -19,7 +21,7 @@ public:
 
     // key = "a.b.c"
     template <typename T>
-    static T getConfig( const std::string& key )
+    static bool getConfig( const std::string& key, T& retValue )
     {
         // Find the JSON value for the key
         Json::Value& root = getInstance()->root();
@@ -35,7 +37,7 @@ public:
             else
             {
                 MY_LOG_FMT( warn, "Config key not found: {}", key );
-                return T();
+                return false;
             }
         }
 
@@ -45,7 +47,7 @@ public:
         if ( !reader.parse( currentNode.toStyledString(), resultJson, false ) )
         {
             MY_LOG_FMT( warn, "Error parsing value for key: {}", key );
-            return T();
+            return false;
         }
 
         // Convert the JSON value to the desired type T
@@ -54,15 +56,39 @@ public:
         if ( !( resultSs >> result ) )
         {
             MY_LOG_FMT( warn, "Error converting value for key: {}", key );
-            return T();
+            return false;
         }
 
-        return result;
+        retValue = result;
+        return true;
     }
 };
 
+// key = "a.b.c"
 template <typename T>
 T getConfig( const std::string& key )
 {
-    return Config::getConfig<T>( key );
+    T result;
+    bool success = Config::getConfig<T>( key, result );
+
+    if ( !success )
+        throw std::runtime_error( MY_FMT( "Can't get config value for key: {}", key ) );
+
+    return result;
+}
+
+// key = "a.b.c" with default value
+template <typename T>
+T getConfig( const std::string& key, const T& defaultValue )
+{
+    T result;
+    bool success = Config::getConfig<T>( key, result );
+
+    if ( !success )
+    {
+        MY_LOG_FMT( warn, "Can't get config value for key: {}. Using default value: {}", key, defaultValue );
+        return defaultValue;
+    }
+
+    return result;
 }

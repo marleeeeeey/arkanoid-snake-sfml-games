@@ -1,6 +1,7 @@
-#include "HelperFunctions.h"
+#include <utils/GeometryUtils.h>
 
-using namespace HelperFunctions;
+namespace
+{
 
 void setOriginPointInCenter( sf::Shape& shape )
 {
@@ -9,24 +10,9 @@ void setOriginPointInCenter( sf::Shape& shape )
     shape.setOrigin( { localBound.width / 2 - thickness, localBound.height / 2 - thickness } );
 }
 
-bool HelperFunctions::isKeyPressed( sf::Event event, sf::Keyboard::Key key )
-{
-    return event.type == sf::Event::EventType::KeyPressed && event.key.code == key;
-}
+} // namespace
 
-sf::Font HelperFunctions::getDefaultFont()
-{
-    sf::Font font;
-    std::string fontFileName = R"(C:\Windows\Fonts\calibri.ttf)";
-    if ( !font.loadFromFile( fontFileName ) )
-    {
-        throw std::runtime_error( MY_FMT( "Can't open font file '{}'", fontFileName ) );
-    }
-
-    return font;
-}
-
-sf::RectangleShape HelperFunctions::createRectangleShape( sf::Vector2f size, sf::Vector2f pos, bool isCenter )
+sf::RectangleShape createRectangleShape( sf::Vector2f size, sf::Vector2f pos, bool isCenter )
 {
     sf::RectangleShape shape( size );
     shape.setPosition( pos );
@@ -41,12 +27,12 @@ sf::RectangleShape HelperFunctions::createRectangleShape( sf::Vector2f size, sf:
     return shape;
 }
 
-sf::RectangleShape HelperFunctions::createRectangleShape( const sf::FloatRect& rect )
+sf::RectangleShape createRectangleShape( const sf::FloatRect& rect )
 {
     return createRectangleShape( { rect.width, rect.height }, { rect.left, rect.top }, false );
 }
 
-sf::CircleShape HelperFunctions::createCircleShape( const float radius, const sf::Vector2f pos )
+sf::CircleShape createCircleShape( const float radius, const sf::Vector2f pos )
 {
     sf::CircleShape shape( radius );
     shape.setPosition( pos );
@@ -57,7 +43,7 @@ sf::CircleShape HelperFunctions::createCircleShape( const float radius, const sf
     return shape;
 }
 
-sf::RectangleShape HelperFunctions::extractInsideRectShape( const sf::CircleShape& circleShape )
+sf::RectangleShape extractInsideRectShape( const sf::CircleShape& circleShape )
 {
     float insideRectSize = std::cos( 45.0f ) * circleShape.getRadius() * 2.0f;
     sf::RectangleShape rectShape =
@@ -66,7 +52,7 @@ sf::RectangleShape HelperFunctions::extractInsideRectShape( const sf::CircleShap
     return rectShape;
 }
 
-std::optional<sf::FloatRect> HelperFunctions::getIntersectRect( const sf::Shape& shape1, const sf::Shape& shape2 )
+std::optional<sf::FloatRect> getIntersectRect( const sf::Shape& shape1, const sf::Shape& shape2 )
 {
     const auto& insideRect = shape1.getGlobalBounds();
     const auto& rect = shape2.getGlobalBounds();
@@ -78,8 +64,7 @@ std::optional<sf::FloatRect> HelperFunctions::getIntersectRect( const sf::Shape&
     return {};
 }
 
-std::optional<sf::RectangleShape> HelperFunctions::getIntersectRectShape(
-    const sf::Shape& shape1, const sf::Shape& shape2 )
+std::optional<sf::RectangleShape> getIntersectRectShape( const sf::Shape& shape1, const sf::Shape& shape2 )
 {
     auto instersectRect = getIntersectRect( shape1, shape2 );
 
@@ -94,18 +79,18 @@ std::optional<sf::RectangleShape> HelperFunctions::getIntersectRectShape(
     return {};
 }
 
-bool HelperFunctions::isIntersect( const sf::Shape& shape1, const sf::Shape& shape2 )
+bool isIntersect( const sf::Shape& shape1, const sf::Shape& shape2 )
 {
     return getIntersectRect( shape1, shape2 ).has_value();
 }
 
-sf::Color HelperFunctions::getAlphaColor( sf::Color color, sf::Uint8 alpha )
+sf::Color getAlphaColor( sf::Color color, sf::Uint8 alpha )
 {
     color.a = alpha;
     return color;
 }
 
-void HelperFunctions::setTextCenterTo( sf::Text& text, sf::Vector2f centerPos )
+void setTextCenterTo( sf::Text& text, sf::Vector2f centerPos )
 {
     text.setPosition( centerPos );
     auto textRect = createRectangleShape( text.getGlobalBounds() );
@@ -114,28 +99,4 @@ void HelperFunctions::setTextCenterTo( sf::Text& text, sf::Vector2f centerPos )
     sf::Vector2f diff = { t.x - c.x, t.y - c.y };
 
     text.move( -diff );
-}
-
-int HelperFunctions::charToInt( char ch )
-{
-    if ( !isdigit( ch ) )
-    {
-        throw std::runtime_error( MY_FMT( "Can't convert char '{}' to int", ch ) );
-    }
-
-    std::stringstream ss;
-    ss << ch;
-    int retValue;
-    ss >> retValue;
-    return retValue;
-}
-
-int HelperFunctions::randomInt( int min, int max )
-{
-    assert( max - min >= 0 );
-    static std::random_device rd;
-    static std::mt19937 gen( rd() );
-    std::uniform_int_distribution distribution( min, max );
-    int randomNumber = distribution( gen );
-    return randomNumber;
 }

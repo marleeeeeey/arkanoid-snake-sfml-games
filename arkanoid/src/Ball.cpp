@@ -1,5 +1,4 @@
 #include "Ball.h"
-#include "HelperFunctions.h"
 #include "IDestructible.h"
 
 Ball::Ball()
@@ -31,7 +30,7 @@ void Ball::changeDirection()
 {
     auto cs = m_biggestCollision.value().getCollisionRect().getSize();
 
-    if ( hf::isEqual( cs.x, cs.y ) )
+    if ( isEqual( cs.x, cs.y ) )
     {
         m_speed.rotate( 180 );
     }
@@ -124,7 +123,7 @@ void Ball::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
     if ( m_bonusType && m_bonusType.value() == BonusType::DecreaseBallSpeed )
     {
         m_bonusType = {};
-        m_speed.setSize( m_bonusSpeed );
+        m_speed.setSize( m_slowdownSpeed );
     }
 
     auto pos = state().getPos();
@@ -137,7 +136,7 @@ void Ball::draw( sf::RenderWindow& window )
 {
     float rectSide = state().getCollisionRect().getSize().x;
     float radius = rectSide / std::sqrt( 2.0f );
-    auto circleShape = hf::createCircleShape( radius, state().getPos() );
+    auto circleShape = createCircleShape( radius, state().getPos() );
 
     sf::Color shapeColor;
     if ( m_bonusType && m_bonusType.value() == BonusType::FireBall )

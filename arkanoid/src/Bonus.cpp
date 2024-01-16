@@ -1,14 +1,13 @@
 #include "Bonus.h"
-#include "HelperFunctions.h"
 
 Bonus::Bonus()
 {
-    m_font = hf::getDefaultFont();
+    m_font = getDefaultFont();
     m_boundRectStandartSize = { 5, 5 };
     m_boundRectBonusSize = { 20, 20 };
 }
 
-void Bonus::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
+void Bonus::calcState( [[maybe_unused]] std::optional<sf::Event> event, sf::Time elapsedTime )
 {
     sf::Vector2f speed = { 0, 100 };
 
@@ -28,15 +27,15 @@ void Bonus::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 void Bonus::draw( sf::RenderWindow& window )
 {
     auto shape = state().getCollisionRect();
-    shape.setFillColor( hf::getAlphaColor( sf::Color::Yellow, 0x80 ) );
+    shape.setFillColor( getAlphaColor( sf::Color::Yellow, 0x80 ) );
 
     if ( m_bonusType )
     {
         sf::Text text;
         text.setFont( m_font );
         text.setFillColor( sf::Color::Black );
-        text.setString( hf::toString( m_bonusType.value() ) );
-        hf::setTextCenterTo( text, state().getPos() );
+        text.setString( toString( m_bonusType.value() ) );
+        setTextCenterTo( text, state().getPos() );
         window.draw( shape );
         window.draw( text );
     }

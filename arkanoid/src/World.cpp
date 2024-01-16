@@ -1,7 +1,4 @@
 #include "World.h"
-
-#include <utility>
-#include "HelperFunctions.h"
 #include "IBonusOwner.h"
 #include "IDynamicObject.h"
 #include "IDestructible.h"
@@ -35,7 +32,7 @@ World::World(
     m_objectFactory = objectFactory;
     m_levelGenerator = std::move( levelGenerator );
     m_windowSize = windowSize;
-    m_font = hf::getDefaultFont();
+    m_font = getDefaultFont();
     m_isGameOver = true;
     m_scopes = 0;
     m_pauseMenu = objectFactory->createObject( ObjectType::PauseMenu );
@@ -81,7 +78,7 @@ void World::initCollisionProcessors()
 
                 if ( plate->bonusType() && plate->bonusType().value() == BonusType::MultiBalls )
                 {
-                    int ballsNumber = hf::randomInt( 1, 3 );
+                    int ballsNumber = randomInt( 1, 3 );
                     auto createdBalls = generateNewBalls( ballsNumber );
                     m_balls.insert( m_balls.end(), createdBalls.begin(), createdBalls.end() );
                     unsigned maxNumberOfBalls = 30;
@@ -135,7 +132,7 @@ std::vector<std::shared_ptr<IObject>> World::generateNewBalls( size_t ballsNumbe
         {
             auto createdBall = existingBall->createCopyFromThis();
             auto createdBallDynamicObject = std::dynamic_pointer_cast<IDynamicObject>( createdBall );
-            auto randomAngle = hf::randomInt( 5, 355 );
+            auto randomAngle = randomInt( 5, 355 );
             createdBallDynamicObject->speed().rotate( randomAngle );
             createdBalls.push_back( createdBall );
             if ( createdBalls.size() == ballsNumber )

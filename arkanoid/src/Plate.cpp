@@ -1,5 +1,4 @@
 #include "Plate.h"
-#include "HelperFunctions.h"
 #include "IStaticObject.h"
 #include "IDynamicObject.h"
 #include "IHaveParent.h"
@@ -124,11 +123,11 @@ void Plate::draw( sf::RenderWindow& window )
     if ( m_bonusType )
     {
         sf::Text text;
-        sf::Font font = hf::getDefaultFont();
+        sf::Font font = getDefaultFont();
         text.setFont( font );
-        text.setString( hf::toString( m_bonusType.value() ) );
+        text.setString( toString( m_bonusType.value() ) );
         text.setFillColor( sf::Color::Blue );
-        hf::setTextCenterTo( text, state().getPos() );
+        setTextCenterTo( text, state().getPos() );
         window.draw( text );
     }
 }

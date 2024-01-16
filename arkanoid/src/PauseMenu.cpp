@@ -1,9 +1,8 @@
 #include "PauseMenu.h"
-#include "HelperFunctions.h"
 
 PauseMenu::PauseMenu()
 {
-    m_font = hf::getDefaultFont();
+    m_font = getDefaultFont();
     m_isVisible = false;
     m_elapsed_ms = 0;
 }
@@ -24,7 +23,7 @@ void PauseMenu::draw( sf::RenderWindow& window )
         return;
 
     auto shape = state().getCollisionRect();
-    shape.setFillColor( hf::getAlphaColor( sf::Color::Black, 0x80 ) );
+    shape.setFillColor( getAlphaColor( sf::Color::Black, 0x80 ) );
     sf::Text text;
     text.setFont( m_font );
     text.setCharacterSize( 100 );
@@ -35,9 +34,9 @@ void PauseMenu::draw( sf::RenderWindow& window )
         counter = blinkPeriod_ms - counter;
     float alpha = static_cast<float>( counter ) * 2 / blinkPeriod_ms * 0xff;
 
-    text.setFillColor( hf::getAlphaColor( sf::Color::White, alpha ) );
+    text.setFillColor( getAlphaColor( sf::Color::White, alpha ) );
     text.setString( "PAUSE" );
-    hf::setTextCenterTo( text, state().getPos() );
+    setTextCenterTo( text, state().getPos() );
     window.draw( shape );
     window.draw( text );
 }

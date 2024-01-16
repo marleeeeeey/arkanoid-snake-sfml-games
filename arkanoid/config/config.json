@@ -1,7 +1,14 @@
 {
   "window": {
-    "width": 800,
-    "height": 600,
-    "title": "Arkanoid"
+    "width": 1000,
+    "height": 800,
+    "frameRate": 60
+  },
+  "game": {
+    "objects": {
+      "ball": {
+        "maxSpeed": 400
+      }
+    }
   }
 }

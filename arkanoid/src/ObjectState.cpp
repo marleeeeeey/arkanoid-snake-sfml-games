@@ -1,5 +1,4 @@
 #include "ObjectState.h"
-#include "HelperFunctions.h"
 
 ObjectState::ObjectState()
 {
@@ -18,12 +17,12 @@ void ObjectState::setCollisionRect( const sf::RectangleShape& collisionRect )
 
 void ObjectState::setCollisionRect( const sf::Vector2f& size, const sf::Vector2f& pos )
 {
-    m_collisionRect = hf::createRectangleShape( size, pos );
+    m_collisionRect = createRectangleShape( size, pos );
 }
 
 void ObjectState::setPos( const sf::Vector2f& pos )
 {
-    m_collisionRect = hf::createRectangleShape( getSize(), pos );
+    m_collisionRect = createRectangleShape( getSize(), pos );
 }
 
 sf::Vector2f ObjectState::getPos() const
@@ -33,7 +32,7 @@ sf::Vector2f ObjectState::getPos() const
 
 void ObjectState::setSize( const sf::Vector2f& size )
 {
-    m_collisionRect = hf::createRectangleShape( size, getPos() );
+    m_collisionRect = createRectangleShape( size, getPos() );
 }
 
 sf::Vector2f ObjectState::getSize() const
