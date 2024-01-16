@@ -13,13 +13,16 @@ int main()
     std::filesystem::path currentDir = std::filesystem::current_path();
     MY_LOG_FMT( info, "Starting Arkanoid game from {}", currentDir.string() );
 
-    sf::Vector2f windowSize = { 600, 800 };
+    auto windowWidth = getConfig<float>( "window.width" );
+    auto windowHeight = getConfig<float>( "window.height" );
+
+    sf::Vector2f windowSize = { windowWidth, windowHeight };
     auto objectFactory = std::make_shared<ObjectFactory>();
     auto levelGenerator = std::make_shared<LevelGenerator>( objectFactory, windowSize );
     auto world = std::make_shared<World>( objectFactory, levelGenerator, windowSize );
     auto videoMode = sf::VideoMode( static_cast<unsigned>( windowSize.x ), static_cast<unsigned>( windowSize.y ) );
     sf::RenderWindow window( videoMode, "Arkanoid" );
-    window.setFramerateLimit( 60 );
+    window.setFramerateLimit( getConfig<int>( "frameRate" ) );
 
     std::ignore = ImGui::SFML::Init( window );
     sf::Clock deltaClock;

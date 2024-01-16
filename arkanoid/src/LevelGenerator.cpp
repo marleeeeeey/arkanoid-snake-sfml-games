@@ -43,7 +43,7 @@ std::vector<Level> LevelGenerator::getSymbolLevels()
 
 void LevelGenerator::readLevelsFromTextFile()
 {
-    std::string relativeConfigPath = "config\\arkanoid_config.txt";
+    std::string relativeConfigPath = "config\\config.txt";
     std::filesystem::path fullPath = std::filesystem::absolute( relativeConfigPath );
     std::ifstream infile( fullPath );
 
