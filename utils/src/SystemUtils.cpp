@@ -16,3 +16,13 @@ sf::Font getDefaultFont()
 
     return font;
 }
+
+std::filesystem::path getFullPath( const std::string& relativePath )
+{
+    std::filesystem::path fullPath = std::filesystem::absolute( relativePath );
+    if ( !std::filesystem::exists( fullPath ) )
+    {
+        throw std::runtime_error( MY_FMT( "Can't load file: {}", fullPath.string() ) );
+    }
+    return fullPath;
+}

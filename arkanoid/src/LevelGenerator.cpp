@@ -40,16 +40,10 @@ std::vector<Level> LevelGenerator::getSymbolLevels()
 
 void LevelGenerator::readLevelsFromTextFile()
 {
-    std::string relativeConfigPath = "config\\config.txt";
-    std::filesystem::path fullPath = std::filesystem::absolute( relativeConfigPath );
-    std::ifstream infile( fullPath );
+    auto configPath = getFullPath( "config\\config.txt" );
+    std::ifstream infile( configPath );
 
-    if ( infile.fail() )
-    {
-        throw std::runtime_error( MY_FMT( "Can't load config file: {}", fullPath.string() ) );
-    }
-
-    MY_LOG_FMT( info, "Config file loaded: {}", fullPath.string() );
+    MY_LOG_FMT( info, "Config file loaded: {}", configPath.string() );
 
     std::string line;
     Level level;

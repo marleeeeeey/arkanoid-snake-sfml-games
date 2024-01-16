@@ -1,4 +1,5 @@
 #pragma once
+#include "SystemUtils.h"
 #include <utils/JsonLoader.h>
 #include <utils/Logger.h>
 #include <spdlog/spdlog.h>
@@ -13,7 +14,9 @@ public:
         if ( !jsonLoader )
         {
             jsonLoader = std::make_shared<JsonLoader>();
-            jsonLoader->loadFromFile( "config\\config.json" );
+            auto configPath = getFullPath( "config\\config.json" );
+            jsonLoader->loadFromFile( configPath.string() );
+            MY_LOG_FMT( info, "Config file loaded: {}", configPath.string() );
         }
 
         return jsonLoader;
