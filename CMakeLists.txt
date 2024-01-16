@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.11)
 project(marleeeeeey_games)
-
 enable_testing()
 
 # ********************************* LIBRARIES HELPERS *********************************

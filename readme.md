@@ -1,3 +1,3 @@
 ```bash
-vcpkg install sfml imgui imgui-sfml gtest spdlog
+vcpkg install gtest imgui  sfml imgui-sfml spdlog jsoncpp
 ```
