@@ -11,7 +11,7 @@ inline int randomInt( int min, int max )
 }
 
 template <typename T>
-bool isEqual( T lhs, T rhs, T eps = 0.01f )
+bool isEqual( T lhs, T rhs, T eps = 0.0001f )
 {
     return std::fabs( lhs - rhs ) < eps;
 }

@@ -155,9 +155,9 @@ void Plate::onBumping( std::vector<Collision>& collisions )
         }
         if ( ball )
         {
-            float maxAgnleShift = 10;
+            float maxAgnleShift = 35;
             float angleShift = maxAgnleShift * getShiftCoef( shared_from_this(), obj );
-            ball->speed().rotate( angleShift );
+            rotateDegInPlace( ball->velocity(), angleShift );
             if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_plateState != PlateState::Attack )
             {
                 auto [_, success] = m_magnetBalls.insert( obj );
@@ -176,7 +176,7 @@ void Plate::onBumping( std::vector<Collision>& collisions )
                     float maxAngle_deg = 45;
                     float angle = maxAngle_deg * getShiftCoef( shared_from_this(), magnetBall ) - 90;
                     auto dynamicBall = std::dynamic_pointer_cast<IDynamicObject>( magnetBall );
-                    dynamicBall->speed().setAngle( angle );
+                    setAngle( dynamicBall->velocity(), angle );
                 }
                 m_magnetBalls.clear();
             }

@@ -22,13 +22,15 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // ************* My Utils *************
+#include <utils/GlmToSfmlOperators.h>
 #include <utils/Config.h>
 #include <utils/CustomFormatters.h>
 #include <utils/GeometryUtils.h>
 #include <utils/Logger.h>
 #include <utils/MathUtils.h>
-#include <utils/MathVector.h>
 #include <utils/StringUtils.h>
 #include <utils/SystemUtils.h>

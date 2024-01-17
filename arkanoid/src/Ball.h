@@ -6,7 +6,7 @@
 
 class Ball : public DefaultObject, public IDynamicObject, public IBonusOwner, public IHaveParent
 {
-    MathVector m_speed;
+    glm::vec2 m_velocity;
     float m_maxSpeed = getConfig<float>( "game.objects.ball.maxSpeed" );
     float m_slowdownSpeed = m_maxSpeed * 0.75f;
     std::optional<Collision> m_biggestCollision;
@@ -20,10 +20,10 @@ public:
     void onBumping( std::vector<Collision>& collisions ) override;
     void calcState( std::optional<sf::Event> event, sf::Time elapsedTime ) override;
     void draw( sf::RenderWindow& window ) override;
-    MathVector& speed() override;
     std::shared_ptr<IObject> createCopyFromThis() override;
     std::optional<BonusType>& bonusType() override;
     std::string name() override;
     void setParent( std::shared_ptr<IObject> parent ) override;
     void removeParent() override;
+    glm::vec2& velocity() override;
 };

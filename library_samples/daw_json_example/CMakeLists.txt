@@ -1,2 +1,2 @@
 file(GLOB TEST_SRCS *.cpp)
-add_gtest(daw_json_sample)
+add_gtest(daw_json_example)

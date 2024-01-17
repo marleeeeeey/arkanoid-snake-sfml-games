@@ -133,7 +133,7 @@ std::vector<std::shared_ptr<IObject>> World::generateNewBalls( size_t ballsNumbe
             auto createdBall = existingBall->createCopyFromThis();
             auto createdBallDynamicObject = std::dynamic_pointer_cast<IDynamicObject>( createdBall );
             auto randomAngle = randomInt( 5, 355 );
-            createdBallDynamicObject->speed().rotate( randomAngle );
+            rotateDegInPlace( createdBallDynamicObject->velocity(), randomAngle );
             createdBalls.push_back( createdBall );
             if ( createdBalls.size() == ballsNumber )
                 break;

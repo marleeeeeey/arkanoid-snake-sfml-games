@@ -3,7 +3,8 @@
 
 Ball::Ball()
 {
-    m_speed = MathVector( -33, 300 );
+    int angle = randomInt( -70, -50 );
+    m_velocity = vectorFromDirectionAndLength( angle, m_maxSpeed );
     DefaultObject::state().setSize( { 20, 20 } );
 }
 
@@ -32,15 +33,16 @@ void Ball::changeDirection()
 
     if ( isEqual( cs.x, cs.y ) )
     {
-        m_speed.rotate( 180 );
+        m_velocity.x *= -1;
+        m_velocity.y *= -1;
     }
     else if ( cs.x > cs.y )
     {
-        m_speed.reflectFromHorizontal();
+        m_velocity.y *= -1;
     }
     else
     {
-        m_speed.reflectFromVertical();
+        m_velocity.x *= -1;
     }
 }
 
@@ -111,25 +113,23 @@ void Ball::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
     if ( m_parent )
         return;
 
-    auto sec = elapsedTime.asSeconds();
+    float sec = elapsedTime.asSeconds();
 
-    float accelerate_pxps = 5;
-    float speedShift = accelerate_pxps * sec;
-    float speed = m_speed.getSize() + speedShift;
-    if ( speed > m_maxSpeed )
-        speed = m_maxSpeed;
-    m_speed.setSize( speed );
+    float factor = 1.1f;
+    m_velocity *= factor;
+
+    if ( glm::length( m_velocity ) > m_maxSpeed )
+        m_velocity = glm::normalize( m_velocity ) * m_maxSpeed;
 
     if ( m_bonusType && m_bonusType.value() == BonusType::DecreaseBallSpeed )
     {
         m_bonusType = {};
-        m_speed.setSize( m_slowdownSpeed );
+        m_velocity = glm::normalize( m_velocity ) * m_slowdownSpeed;
     }
 
     auto pos = state().getPos();
-    auto coordinates = m_speed.getCoordinate();
-    sf::Vector2f offset = { sec * coordinates.x, sec * coordinates.y };
-    state().setPos( pos + offset );
+    pos += sec * m_velocity;
+    state().setPos( pos );
 }
 
 void Ball::draw( sf::RenderWindow& window )
@@ -150,11 +150,6 @@ void Ball::draw( sf::RenderWindow& window )
 
     circleShape.setFillColor( shapeColor );
     window.draw( circleShape );
-}
-
-MathVector& Ball::speed()
-{
-    return m_speed;
 }
 
 std::shared_ptr<IObject> Ball::createCopyFromThis()
@@ -183,4 +178,9 @@ void Ball::setParent( std::shared_ptr<IObject> parent )
 void Ball::removeParent()
 {
     m_parent.reset();
+}
+
+glm::vec2& Ball::velocity()
+{
+    return m_velocity;
 }

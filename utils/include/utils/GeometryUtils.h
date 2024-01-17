@@ -13,3 +13,10 @@ std::optional<sf::RectangleShape> getIntersectRectShape( const sf::Shape& shape1
 bool isIntersect( const sf::Shape& shape1, const sf::Shape& shape2 );
 
 sf::Color getAlphaColor( sf::Color color, sf::Uint8 alpha );
+
+[[nodiscard]] glm::vec2 rotateDeg( const glm::vec2& vec, float angleDegrees );
+void rotateDegInPlace( glm::vec2& vec, float angleDegrees );
+
+void setAngle( glm::vec2& vec, float angleDegrees );
+
+glm::vec2 vectorFromDirectionAndLength( float angleDegrees, float length );

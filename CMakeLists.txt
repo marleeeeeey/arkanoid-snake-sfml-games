@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 project(marleeeeeey_games)
 enable_testing()
 
-
 # ********************************* LIBRARIES HELPERS *********************************
-
 find_package(GTest REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
@@ -13,8 +11,7 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-
-function (link_gtest TGT)
+function(link_gtest TGT)
     target_include_directories(${TGT} PRIVATE ${GTEST_INCLUDE_DIRS})
     target_link_libraries(${TGT} PRIVATE ${GTEST_BOTH_LIBRARIES})
 endfunction()
@@ -29,7 +26,6 @@ function(link_external_libs TGT)
 endfunction()
 
 # ********************************* COMMON HELPERS *********************************
-
 function(set_compile_settings TGT)
     # TODO
     # target_compile_options(${TGT} PRIVATE -Wall -Werror -Wno-c++98-compat)
@@ -42,7 +38,6 @@ function(copy_game_configs TGT)
 endfunction()
 
 # ********************************* SPECIFIC HELPERS *********************************
-
 function(add_static_library TGT)
     set(STATIC_LIB_TARGET ${TGT})
     set(STATIC_LIB_PCH ${PCH})
@@ -55,8 +50,8 @@ function(add_static_library TGT)
 endfunction()
 
 function(add_gtest TGT)
-    set(UNIT_TARGET ${TGT}_unit)
-    set(TEST_TARGET ${TGT}_test)
+    set(UNIT_TARGET ${TGT}_gtest)
+    set(TEST_TARGET ${TGT}_gtest_target)
 
     add_executable(${UNIT_TARGET} ${TEST_SRCS})
     link_gtest(${UNIT_TARGET})
@@ -82,6 +77,7 @@ function(add_game TGT)
     copy_game_configs(${TGT})
 endfunction()
 
+# ********************************* SUBDIRECTORIES *********************************
 add_subdirectory(utils)
 add_subdirectory(arkanoid)
 add_subdirectory(library_samples)

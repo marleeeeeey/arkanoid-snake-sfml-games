@@ -1,2 +1,4 @@
-add_subdirectory(daw_json_sample)
+add_subdirectory(daw_json_example)
 add_subdirectory(nlohmann_json_example)
+add_subdirectory(glm_moving_ball_example)
+add_subdirectory(glm_geometry_example)

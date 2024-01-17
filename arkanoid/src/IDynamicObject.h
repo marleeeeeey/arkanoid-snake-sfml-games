@@ -4,5 +4,5 @@ class IDynamicObject
 {
 public:
     virtual ~IDynamicObject() = default;
-    virtual MathVector& speed() = 0;
+    virtual glm::vec2& velocity() = 0;
 };

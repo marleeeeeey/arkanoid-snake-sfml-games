@@ -90,6 +90,41 @@ sf::Color getAlphaColor( sf::Color color, sf::Uint8 alpha )
     return color;
 }
 
+glm::vec2 rotateDeg( const glm::vec2& vec, float angleDegrees )
+{
+    glm::vec2 result;
+    rotateDegInPlace( result, angleDegrees );
+    return result;
+}
+
+void rotateDegInPlace( glm::vec2& vec, float angleDegrees )
+{
+    float angleRadians = glm::radians( angleDegrees );
+    glm::mat4 rotationMatrix = glm::rotate( glm::mat4( 1.0f ), angleRadians, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+    glm::vec4 rotatedVector = rotationMatrix * glm::vec4( vec, 0.0f, 1.0f );
+    vec = glm::vec2( rotatedVector );
+}
+
+void setAngle( glm::vec2& vec, float angleDegrees )
+{
+    float angleRadians = glm::radians( angleDegrees );
+    float length = glm::length( vec );
+
+    vec.x = length * std::cos( angleRadians );
+    vec.y = length * std::sin( angleRadians );
+}
+
+glm::vec2 vectorFromDirectionAndLength( float angleDegrees, float length )
+{
+    float angleRadians = glm::radians( angleDegrees );
+
+    glm::vec2 result;
+    result.x = length * std::cos( angleRadians );
+    result.y = length * std::sin( angleRadians );
+
+    return result;
+}
+
 void setTextCenterTo( sf::Text& text, sf::Vector2f centerPos )
 {
     text.setPosition( centerPos );
