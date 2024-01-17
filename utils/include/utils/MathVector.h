@@ -1,12 +1,12 @@
 #pragma once
 
 // TODO: improve it
-// 1. Store two vectors?
+// 1. Store as vector?
 // 2. Improve operations with vectors
 class MathVector
 {
     float m_size{};
-    float m_angle_deg{};
+    float m_angleDeg{};
 public:
     explicit MathVector();
     explicit MathVector( float angleDeg, float size );

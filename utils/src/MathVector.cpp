@@ -1,4 +1,4 @@
-#include "MathVector.h"
+#include <utils/MathVector.h>
 
 namespace
 {
@@ -60,12 +60,12 @@ void MathVector::setAngle( float angleDeg )
     {
         angleDeg += 360.0f;
     }
-    m_angle_deg = angleDeg;
+    m_angleDeg = angleDeg;
 }
 
 float MathVector::getAngle() const
 {
-    return m_angle_deg;
+    return m_angleDeg;
 }
 
 void MathVector::setCoordinates( sf::Vector2f coordinate )
@@ -111,7 +111,7 @@ void MathVector::setCoordinates( sf::Vector2f coordinate )
 
 sf::Vector2f MathVector::getCoordinate() const
 {
-    auto radians = degToRad( m_angle_deg );
+    auto radians = degToRad( m_angleDeg );
     sf::Vector2f coord;
     coord.y = sin( radians ) * m_size;
     coord.x = cos( radians ) * m_size;

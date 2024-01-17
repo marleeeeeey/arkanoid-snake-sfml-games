@@ -1,5 +1,4 @@
 #pragma once
-#include "MathVector.h"
 
 class IDynamicObject
 {

@@ -29,5 +29,6 @@
 #include <utils/GeometryUtils.h>
 #include <utils/Logger.h>
 #include <utils/MathUtils.h>
+#include <utils/MathVector.h>
 #include <utils/StringUtils.h>
 #include <utils/SystemUtils.h>

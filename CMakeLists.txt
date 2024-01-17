@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 project(marleeeeeey_games)
 enable_testing()
 
+
 # ********************************* LIBRARIES HELPERS *********************************
 
 find_package(GTest REQUIRED)
@@ -9,7 +10,9 @@ find_package(imgui CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+
 
 function (link_gtest TGT)
     target_include_directories(${TGT} PRIVATE ${GTEST_INCLUDE_DIRS})
@@ -21,9 +24,9 @@ function(link_external_libs TGT)
     target_link_libraries(${TGT} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
     target_link_libraries(${TGT} PRIVATE ImGui-SFML::ImGui-SFML)
     target_link_libraries(${TGT} PRIVATE spdlog::spdlog)
-    target_link_libraries(${TGT} PRIVATE JsonCpp::JsonCpp)
+    target_link_libraries(${TGT} PRIVATE nlohmann_json::nlohmann_json)
+    target_link_libraries(${TGT} PRIVATE glm::glm)
 endfunction()
-
 
 # ********************************* COMMON HELPERS *********************************
 
@@ -81,5 +84,6 @@ endfunction()
 
 add_subdirectory(utils)
 add_subdirectory(arkanoid)
+add_subdirectory(library_samples)
 
 install()

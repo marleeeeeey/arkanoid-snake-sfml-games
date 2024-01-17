@@ -1,6 +1,5 @@
 #pragma once
 #include "DefaultObject.h"
-#include "MathVector.h"
 #include "IDynamicObject.h"
 #include "IBonusOwner.h"
 #include "IHaveParent.h"
