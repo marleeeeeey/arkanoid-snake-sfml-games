@@ -3,8 +3,7 @@
 #include "LevelGenerator.h"
 
 /*
- * TODO:
- * 1. Create global class "NotificationManager" which will be responsible for showing notifications.
+ * TODO: Create global class "NotificationManager" which will be responsible for showing notifications.
  *  - It should be able to show notifications in the top of the screen.
  *  - It should keep always visible variables in the map.
  *    - They should be placed in game header.
@@ -16,9 +15,9 @@ int main()
     std::filesystem::path currentDir = std::filesystem::current_path();
     MY_LOG_FMT( info, "Starting Arkanoid game from {}", currentDir.string() );
 
-    static const auto windowWidth = getConfig<float>( "window.width", 600 );
-    static const auto windowHeight = getConfig<float>( "window.height", 800 );
-    static const auto windowFrameRate = getConfig<int>( "window.frameRate", 60 );
+    static const auto windowWidth = getConfig<float, "window.width", 600>();
+    static const auto windowHeight = getConfig<float, "window.height", 800>();
+    static const auto windowFrameRate = getConfig<int, "window.frameRate", 60>();
 
     sf::Vector2f windowSize = { windowWidth, windowHeight };
     auto objectFactory = std::make_shared<ObjectFactory>();

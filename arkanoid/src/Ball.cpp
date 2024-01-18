@@ -3,7 +3,7 @@
 
 namespace
 {
-const float ballInitialSpeed = getConfig<float>( "game.objects.ball.initialSpeed" );
+const float ballInitialSpeed = getConfig<float, "game.objects.ball.initialSpeed">();
 const float ballMaxSpeed = ballInitialSpeed * 1.5f;
 } // namespace
 

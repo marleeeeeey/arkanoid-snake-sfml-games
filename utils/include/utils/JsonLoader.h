@@ -14,12 +14,12 @@ public:
     Json& root();
     const Json& root() const;
 
-    bool loadFromString( const std::string& jsonString );
-    bool loadFromFile( const std::string& filename );
+    bool loadFromString( std::string_view jsonString );
+    bool loadFromFile( std::string_view filename );
 
     bool saveToSameFile() const;
     bool saveToFile( const std::string& filename ) const;
 };
 
 // Function to access data at a specified path within JSON
-std::optional<Json> getElementByPath( const Json& jsonData, const std::string& path );
+std::optional<Json> getElementByPath( const Json& jsonData, std::string_view path );

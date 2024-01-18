@@ -13,11 +13,11 @@ const Json& JsonLoader::root() const
     return root_;
 }
 
-bool JsonLoader::loadFromFile( const std::string& filename )
+bool JsonLoader::loadFromFile( std::string_view filename )
 {
     try
     {
-        std::ifstream inputFile( filename );
+        std::ifstream inputFile( filename.data() );
         if ( !inputFile.is_open() )
         {
             MY_LOG_FMT( warn, "Error opening file for reading: {}", filename );
@@ -70,7 +70,7 @@ bool JsonLoader::saveToFile( const std::string& filename ) const
     }
 }
 
-bool JsonLoader::loadFromString( const std::string& jsonString )
+bool JsonLoader::loadFromString( std::string_view jsonString )
 {
     try
     {
@@ -84,22 +84,18 @@ bool JsonLoader::loadFromString( const std::string& jsonString )
     }
 }
 
-std::optional<Json> getElementByPath( const Json& jsonData, const std::string& path )
+std::optional<Json> getElementByPath( const Json& jsonData, std::string_view path )
 {
     Json currentNode = jsonData;
-    std::istringstream ss( path );
+    std::istringstream ss( path.data() );
     std::string segment;
 
     while ( std::getline( ss, segment, '.' ) )
     {
         if ( currentNode.is_object() && currentNode.find( segment ) != currentNode.end() )
-        {
             currentNode = currentNode[segment];
-        }
         else
-        {
-            return {};
-        }
+            return std::nullopt;
     }
 
     return currentNode;

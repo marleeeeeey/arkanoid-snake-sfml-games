@@ -1,34 +1,47 @@
 #pragma once
 #include <utils/JsonLoader.h>
 #include <utils/Logger.h>
-#include <spdlog/spdlog.h>
 
+// TODO: check incorrect usage of config parameters on application start
 class Config
 {
 public:
-    static std::shared_ptr<JsonLoader>& getInstance();
+    // jsonStrExample - optional json string to load instead of file. Mostly for tests.
+    static std::shared_ptr<JsonLoader>& getInstance( std::string_view jsonStrExample = {} );
 };
 
-// key = "a.b.c"
-template <typename T>
-T getConfig( const std::string& key )
+// Literal class type that wraps a constant expression string.
+// Uses implicit conversion to allow templates to *seemingly* accept constant strings.
+template <size_t N>
+struct StringLiteral
 {
-    std::optional<T> element = getElementByPath( Config::getInstance()->root(), key );
+    constexpr StringLiteral( const char ( &str )[N] ) { std::copy_n( str, N, value ); }
+    char value[N];
+};
 
-    if ( !element.has_value() )
-        throw std::runtime_error( MY_FMT( "Can't get config value for key: {}", key ) );
+template <StringLiteral lit>
+std::string_view toStringView()
+{
+    constexpr auto contents = lit.value;
+    return { contents };
+}
 
-    return element.value();
+// Key = "a.b.c"
+template <typename T, StringLiteral key>
+T& getConfig()
+{
+    static std::optional<T> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
+    return valueOpt.value();
 }
 
 // key = "a.b.c" with default value
-template <typename T>
-T getConfig( const std::string& key, const T& defaultValue )
+template <typename To, StringLiteral key, auto defaultValue>
+To& getConfig()
 {
-    std::optional<T> element = getElementByPath( Config::getInstance()->root(), key );
+    static std::optional<To> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
 
-    if ( !element.has_value() )
-        return defaultValue;
+    if ( !valueOpt.has_value() )
+        valueOpt = static_cast<To>( defaultValue );
 
-    return element.value();
+    return valueOpt.value();
 }

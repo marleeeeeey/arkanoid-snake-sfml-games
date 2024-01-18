@@ -56,6 +56,7 @@ function(add_gtest TGT)
     add_executable(${UNIT_TARGET} ${TEST_SRCS})
     link_gtest(${UNIT_TARGET})
     link_external_libs(${UNIT_TARGET})
+    target_link_libraries(${UNIT_TARGET} PRIVATE utils)
     set_compile_settings(${UNIT_TARGET})
 
     add_test(
@@ -80,6 +81,7 @@ endfunction()
 # ********************************* SUBDIRECTORIES *********************************
 add_subdirectory(utils)
 add_subdirectory(arkanoid)
-add_subdirectory(library_samples)
+add_subdirectory(library_examples)
+add_subdirectory(utils_examples)
 
 install()
