@@ -1,10 +1,17 @@
 #include "Ball.h"
 #include "IDestructible.h"
 
+namespace
+{
+const float ballInitialSpeed = getConfig<float>( "game.objects.ball.initialSpeed" );
+const float ballMaxSpeed = ballInitialSpeed * 1.5f;
+} // namespace
+
 Ball::Ball()
 {
     int angle = randomInt( -70, -50 );
-    m_velocity = vectorFromDirectionAndLength( angle, m_maxSpeed );
+    angle = randomBool() ? angle : -angle;
+    m_velocity = vectorFromDirectionAndLength( angle, ballInitialSpeed );
     DefaultObject::state().setSize( { 20, 20 } );
 }
 
@@ -115,16 +122,16 @@ void Ball::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 
     float sec = elapsedTime.asSeconds();
 
-    float factor = 1.1f;
+    float factor = 1.0001f;
     m_velocity *= factor;
 
-    if ( glm::length( m_velocity ) > m_maxSpeed )
-        m_velocity = glm::normalize( m_velocity ) * m_maxSpeed;
+    if ( glm::length( m_velocity ) > ballMaxSpeed )
+        m_velocity = glm::normalize( m_velocity ) * ballMaxSpeed;
 
     if ( m_bonusType && m_bonusType.value() == BonusType::DecreaseBallSpeed )
     {
         m_bonusType = {};
-        m_velocity = glm::normalize( m_velocity ) * m_slowdownSpeed;
+        m_velocity = glm::normalize( m_velocity ) * ballInitialSpeed;
     }
 
     auto pos = state().getPos();

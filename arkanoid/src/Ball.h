@@ -7,8 +7,6 @@
 class Ball : public DefaultObject, public IDynamicObject, public IBonusOwner, public IHaveParent
 {
     glm::vec2 m_velocity;
-    float m_maxSpeed = getConfig<float>( "game.objects.ball.maxSpeed" );
-    float m_slowdownSpeed = m_maxSpeed * 0.75f;
     std::optional<Collision> m_biggestCollision;
     std::optional<BonusType> m_bonusType;
     std::optional<std::shared_ptr<IObject>> m_parent;

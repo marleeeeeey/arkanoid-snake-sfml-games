@@ -7,10 +7,13 @@
   "game": {
     "objects": {
       "ball": {
-        "maxSpeed": 400
+        "initialSpeed": 400
       },
       "paddle": {
-        "speed": 400
+        "speed": 800,
+        "damping": 0.06,
+        "big_size_factor": 1.5,
+        "angle_sensitivity": 35
       }
     }
   }

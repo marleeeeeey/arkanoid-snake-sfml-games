@@ -41,11 +41,11 @@ void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTi
         m_paddleState = PaddleState::Attack;
     }
 
-    float speed_pxps = 600;
+    static const auto speed_pxps = getConfig<float>( "game.objects.paddle.speed" );
     float elapsedSec = elapsedTime.asSeconds();
-    elapsedSec = std::min( elapsedSec, 0.1f );
     float absOffset = speed_pxps * elapsedSec;
-    float absDampingOffset = absOffset * 0.08f;
+    static const auto damping = getConfig<float>( "game.objects.paddle.damping" );
+    float absDampingOffset = absOffset * damping;
 
     switch ( m_paddleState )
     {
@@ -97,7 +97,8 @@ void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
             m_originalSize = size;
 
         size = m_originalSize.value();
-        size.x *= 1.5f;
+        static const auto bigSizeFactor = getConfig<float>( "game.objects.paddle.big_size_factor" );
+        size.x *= bigSizeFactor;
         state().setSize( size );
     }
     else
@@ -155,8 +156,8 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
         }
         if ( ball )
         {
-            float maxAgnleShift = 35;
-            float angleShift = maxAgnleShift * getShiftCoef( shared_from_this(), obj );
+            static const auto angleSensivity = getConfig<float>( "game.objects.paddle.angle_sensitivity" );
+            float angleShift = angleSensivity * getShiftCoef( shared_from_this(), obj );
             rotateDegInPlace( ball->velocity(), angleShift );
             if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_paddleState != PaddleState::Attack )
             {
@@ -173,6 +174,7 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
                 {
                     auto childBall = std::dynamic_pointer_cast<IHaveParent>( magnetBall );
                     childBall->removeParent();
+                    // TODO refactor it
                     float maxAngle_deg = 45;
                     float angle = maxAngle_deg * getShiftCoef( shared_from_this(), magnetBall ) - 90;
                     auto dynamicBall = std::dynamic_pointer_cast<IDynamicObject>( magnetBall );

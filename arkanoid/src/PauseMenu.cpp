@@ -45,6 +45,7 @@ void PauseMenu::calcState( std::optional<sf::Event> event, sf::Time elapsedTime 
 {
     m_elapsed_ms += elapsedTime.asMilliseconds();
 
+    // TODO: use magic enum to deserialize event.key.code from config
     if ( event && event.value().type == sf::Event::EventType::KeyPressed &&
          event.value().key.code == sf::Keyboard::Key::P )
     {
