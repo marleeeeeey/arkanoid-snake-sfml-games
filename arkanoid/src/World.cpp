@@ -71,12 +71,12 @@ void World::initCollisionProcessors()
                 auto object = collision.getObject();
                 object->state().setDestroyFlag( true );
                 auto bonus = std::dynamic_pointer_cast<IBonusOwner>( object );
-                auto plate = std::dynamic_pointer_cast<IBonusOwner>( thisObject );
+                auto paddle = std::dynamic_pointer_cast<IBonusOwner>( thisObject );
                 auto bonusBonusType = bonus->bonusType();
                 if ( bonusBonusType )
-                    plate->bonusType() = bonusBonusType;
+                    paddle->bonusType() = bonusBonusType;
 
-                if ( plate->bonusType() && plate->bonusType().value() == BonusType::MultiBalls )
+                if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::MultiBalls )
                 {
                     int ballsNumber = randomInt( 1, 3 );
                     auto createdBalls = generateNewBalls( ballsNumber );
@@ -88,9 +88,9 @@ void World::initCollisionProcessors()
                     }
                 }
 
-                if ( plate->bonusType() && plate->bonusType().value() == BonusType::DisableBonuses )
+                if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::DisableBonuses )
                 {
-                    plate->bonusType() = {};
+                    paddle->bonusType() = {};
 
                     for ( const auto& ball : m_balls )
                     {
@@ -99,22 +99,22 @@ void World::initCollisionProcessors()
                     }
                 }
 
-                if ( plate->bonusType() && plate->bonusType().value() == BonusType::FireBall )
+                if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::FireBall )
                 {
                     if ( !m_balls.empty() )
                     {
                         auto firstBall = m_balls.front();
                         auto bonusBall = std::dynamic_pointer_cast<IBonusOwner>( firstBall );
-                        bonusBall->bonusType() = plate->bonusType().value();
+                        bonusBall->bonusType() = paddle->bonusType().value();
                     }
                 }
 
-                if ( plate->bonusType() && plate->bonusType().value() == BonusType::DecreaseBallSpeed )
+                if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::DecreaseBallSpeed )
                 {
                     for ( const auto& ball : m_balls )
                     {
                         auto bonusBall = std::dynamic_pointer_cast<IBonusOwner>( ball );
-                        bonusBall->bonusType() = plate->bonusType().value();
+                        bonusBall->bonusType() = paddle->bonusType().value();
                     }
                 }
 
@@ -144,14 +144,14 @@ std::vector<std::shared_ptr<IObject>> World::generateNewBalls( size_t ballsNumbe
 
 void World::initPlates()
 {
-    float plateKoefThinkness = 0.025f;
-    float plateKoefSize = 0.2f;
-    auto plate = m_objectFactory->createObject( ObjectType::Plate );
-    plate->state().setSize( { m_windowSize.x * plateKoefSize, m_windowSize.y * plateKoefThinkness } );
-    plate->state().setPos( { m_windowSize.x / 2, m_windowSize.y * ( 1 - plateKoefThinkness ) } );
-    plate->setOnBumpingCallBack( [&]( auto, const std::vector<Collision>& collisions )
+    float paddleKoefThinkness = 0.025f;
+    float paddleKoefSize = 0.2f;
+    auto paddle = m_objectFactory->createObject( ObjectType::Plate );
+    paddle->state().setSize( { m_windowSize.x * paddleKoefSize, m_windowSize.y * paddleKoefThinkness } );
+    paddle->state().setPos( { m_windowSize.x / 2, m_windowSize.y * ( 1 - paddleKoefThinkness ) } );
+    paddle->setOnBumpingCallBack( [&]( auto, const std::vector<Collision>& collisions )
                                  { m_scopes += collisions.size(); } );
-    m_plates.push_back( plate );
+    m_plates.push_back( paddle );
 }
 
 void World::initWalls()
@@ -264,9 +264,9 @@ void World::onEveryUpdate()
     if ( m_plates.empty() )
         return;
 
-    auto plate = std::dynamic_pointer_cast<IBonusOwner>( m_plates.front() );
-    auto plateBonus = plate->bonusType();
-    if ( plateBonus && plateBonus.value() == BonusType::RenewableBalls )
+    auto paddle = std::dynamic_pointer_cast<IBonusOwner>( m_plates.front() );
+    auto paddleBonus = paddle->bonusType();
+    if ( paddleBonus && paddleBonus.value() == BonusType::RenewableBalls )
     {
         size_t countRenewableBalls = 3;
         if ( m_balls.size() < countRenewableBalls )

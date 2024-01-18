@@ -2,7 +2,7 @@
 #include "DefaultObject.h"
 #include "IBonusOwner.h"
 
-enum class PlateState
+enum class PaddleState
 {
     Stop,
     MoveLeft,
@@ -10,18 +10,18 @@ enum class PlateState
     Attack,
 };
 
-class Plate : public DefaultObject, public IBonusOwner
+class Paddle : public DefaultObject, public IBonusOwner
 {
     std::optional<sf::Vector2f> m_originalSize;
     std::set<std::shared_ptr<IObject>> m_collisionWalls;
     std::set<std::shared_ptr<IObject>> m_magnetBalls;
     float m_offset;
-    PlateState m_plateState;
+    PaddleState m_paddleState;
     std::optional<BonusType> m_bonusType;
 
     void calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTime );
 public:
-    Plate();
+    Paddle();
     void calcState( std::optional<sf::Event> event, sf::Time elapsedTime ) override;
     void draw( sf::RenderWindow& window ) override;
     void onBumping( std::vector<Collision>& collisions ) override;

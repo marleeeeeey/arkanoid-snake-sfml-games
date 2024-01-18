@@ -8,6 +8,9 @@
     "objects": {
       "ball": {
         "maxSpeed": 400
+      },
+      "paddle": {
+        "speed": 400
       }
     }
   }

@@ -2,7 +2,7 @@
 #include "Brick.h"
 #include "Ball.h"
 #include "Wall.h"
-#include "Plate.h"
+#include "Paddle.h"
 #include "Bonus.h"
 #include "PauseMenu.h"
 
@@ -13,7 +13,7 @@ std::shared_ptr<IObject> ObjectFactory::createObject( ObjectType objectType )
     case ObjectType::Brick:
         return std::make_shared<Brick>();
     case ObjectType::Plate:
-        return std::make_shared<Plate>();
+        return std::make_shared<Paddle>();
     case ObjectType::Ball:
         return std::make_shared<Ball>();
     case ObjectType::Bonus:

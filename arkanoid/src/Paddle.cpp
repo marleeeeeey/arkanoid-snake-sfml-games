@@ -1,44 +1,44 @@
-#include "Plate.h"
+#include "Paddle.h"
 #include "IStaticObject.h"
 #include "IDynamicObject.h"
 #include "IHaveParent.h"
 
-Plate::Plate()
+Paddle::Paddle()
 {
     m_offset = 0;
-    m_plateState = PlateState::Stop;
+    m_paddleState = PaddleState::Stop;
 }
 
-void Plate::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTime )
+void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTime )
 {
     if ( event && event.value().type == sf::Event::EventType::KeyPressed &&
-         event.value().key.code == sf::Keyboard::Key::Left && m_plateState != PlateState::MoveLeft )
+         event.value().key.code == sf::Keyboard::Key::Left && m_paddleState != PaddleState::MoveLeft )
     {
-        m_plateState = PlateState::MoveLeft;
+        m_paddleState = PaddleState::MoveLeft;
     }
     else if (
         event && event.value().type == sf::Event::EventType::KeyReleased &&
-        event.value().key.code == sf::Keyboard::Key::Left && m_plateState == PlateState::MoveLeft )
+        event.value().key.code == sf::Keyboard::Key::Left && m_paddleState == PaddleState::MoveLeft )
     {
-        m_plateState = PlateState::Stop;
+        m_paddleState = PaddleState::Stop;
     }
     else if (
         event && event.value().type == sf::Event::EventType::KeyPressed &&
-        event.value().key.code == sf::Keyboard::Key::Right && m_plateState != PlateState::MoveRight )
+        event.value().key.code == sf::Keyboard::Key::Right && m_paddleState != PaddleState::MoveRight )
     {
-        m_plateState = PlateState::MoveRight;
+        m_paddleState = PaddleState::MoveRight;
     }
     else if (
         event && event.value().type == sf::Event::EventType::KeyReleased &&
-        event.value().key.code == sf::Keyboard::Key::Right && m_plateState == PlateState::MoveRight )
+        event.value().key.code == sf::Keyboard::Key::Right && m_paddleState == PaddleState::MoveRight )
     {
-        m_plateState = PlateState::Stop;
+        m_paddleState = PaddleState::Stop;
     }
     else if (
         event && event.value().type == sf::Event::EventType::KeyReleased &&
-        event.value().key.code == sf::Keyboard::Key::Space && m_plateState != PlateState::Attack )
+        event.value().key.code == sf::Keyboard::Key::Space && m_paddleState != PaddleState::Attack )
     {
-        m_plateState = PlateState::Attack;
+        m_paddleState = PaddleState::Attack;
     }
 
     float speed_pxps = 600;
@@ -47,9 +47,9 @@ void Plate::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTim
     float absOffset = speed_pxps * elapsedSec;
     float absDampingOffset = absOffset * 0.08f;
 
-    switch ( m_plateState )
+    switch ( m_paddleState )
     {
-    case PlateState::Stop:
+    case PaddleState::Stop:
         if ( m_offset > 0 )
             m_offset -= absDampingOffset;
         else if ( m_offset < 0 )
@@ -57,19 +57,19 @@ void Plate::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTim
         if ( m_offset != 0.0f && abs( m_offset ) < absDampingOffset )
             m_offset = 0;
         break;
-    case PlateState::MoveLeft:
+    case PaddleState::MoveLeft:
         m_offset = -absOffset;
         break;
-    case PlateState::MoveRight:
+    case PaddleState::MoveRight:
         m_offset = absOffset;
         break;
-    case PlateState::Attack:
+    case PaddleState::Attack:
         // TODO
         break;
     }
 }
 
-void Plate::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
+void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 {
     sf::Vector2f pos01 = state().getPos();
     calculateOffset( event, elapsedTime );
@@ -114,7 +114,7 @@ void Plate::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
     }
 }
 
-void Plate::draw( sf::RenderWindow& window )
+void Paddle::draw( sf::RenderWindow& window )
 {
     auto shape = state().getCollisionRect();
     shape.setFillColor( sf::Color::Cyan );
@@ -132,17 +132,17 @@ void Plate::draw( sf::RenderWindow& window )
     }
 }
 
-float getShiftCoef( const std::shared_ptr<IObject>& plate, const std::shared_ptr<IObject>& obj )
+float getShiftCoef( const std::shared_ptr<IObject>& paddle, const std::shared_ptr<IObject>& obj )
 {
     auto ballCenter = obj->state().getPos();
-    auto plateCenter = plate->state().getPos();
-    auto centersShift = ballCenter.x - plateCenter.x;
-    auto halfLength = plate->state().getSize().x / 2;
+    auto paddleCenter = paddle->state().getPos();
+    auto centersShift = ballCenter.x - paddleCenter.x;
+    auto halfLength = paddle->state().getSize().x / 2;
     auto result = centersShift / halfLength;
     return result;
 }
 
-void Plate::onBumping( std::vector<Collision>& collisions )
+void Paddle::onBumping( std::vector<Collision>& collisions )
 {
     for ( auto collision : collisions )
     {
@@ -158,7 +158,7 @@ void Plate::onBumping( std::vector<Collision>& collisions )
             float maxAgnleShift = 35;
             float angleShift = maxAgnleShift * getShiftCoef( shared_from_this(), obj );
             rotateDegInPlace( ball->velocity(), angleShift );
-            if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_plateState != PlateState::Attack )
+            if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_paddleState != PaddleState::Attack )
             {
                 auto [_, success] = m_magnetBalls.insert( obj );
                 if ( success )
@@ -184,20 +184,20 @@ void Plate::onBumping( std::vector<Collision>& collisions )
     }
 }
 
-std::optional<BonusType>& Plate::bonusType()
+std::optional<BonusType>& Paddle::bonusType()
 {
     return m_bonusType;
 }
 
-std::shared_ptr<IObject> Plate::createCopyFromThis()
+std::shared_ptr<IObject> Paddle::createCopyFromThis()
 {
-    auto createdObjectPtr = std::make_shared<Plate>();
-    Plate& createdObject = *createdObjectPtr.get();
+    auto createdObjectPtr = std::make_shared<Paddle>();
+    Paddle& createdObject = *createdObjectPtr.get();
     createdObject = *this;
     return createdObjectPtr;
 }
 
-std::string Plate::name()
+std::string Paddle::name()
 {
-    return "Plate";
+    return "Paddle";
 }
