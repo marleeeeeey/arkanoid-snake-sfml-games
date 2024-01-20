@@ -19,29 +19,28 @@ struct StringLiteral
     char value[N];
 };
 
-template <StringLiteral lit>
+template <StringLiteral Lit>
 std::string_view toStringView()
 {
-    constexpr auto contents = lit.value;
-    return { contents };
+    return { Lit.value };
 }
 
 // Key = "a.b.c"
 template <typename T, StringLiteral key>
-T& getConfig()
+const T& getConfig()
 {
     static std::optional<T> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
     return valueOpt.value();
 }
 
 // key = "a.b.c" with default value
-template <typename To, StringLiteral key, auto defaultValue>
-To& getConfig()
+template <typename T, StringLiteral key, auto defaultValue>
+const T& getConfig()
 {
-    static std::optional<To> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
+    static std::optional<T> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
 
     if ( !valueOpt.has_value() )
-        valueOpt = static_cast<To>( defaultValue );
+        valueOpt = static_cast<T>( defaultValue );
 
     return valueOpt.value();
 }

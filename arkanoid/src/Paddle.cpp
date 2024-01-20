@@ -97,8 +97,8 @@ void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
             m_originalSize = size;
 
         size = m_originalSize.value();
-        static const auto bigSizeFactor = getConfig<float, "game.objects.paddle.big_size_factor">();
-        size.x *= bigSizeFactor;
+        auto longSizeFactor = getConfig<float, "game.objects.paddle.longSizeFactor">();
+        size.x *= longSizeFactor;
         state().setSize( size );
     }
     else
