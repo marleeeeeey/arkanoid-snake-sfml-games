@@ -1,13 +1,20 @@
 #pragma once
 #include <utils/JsonLoader.h>
 #include <utils/Logger.h>
+#include <utils/JsonFormatter.h>
 
 // TODO: check incorrect usage of config parameters on application start
 class Config
 {
 public:
-    // jsonStrExample - optional json string to load instead of file. Mostly for tests.
-    static std::shared_ptr<JsonLoader>& getInstance( std::string_view jsonStrExample = {} );
+    enum class Mode
+    {
+        NoReload,
+        ForceReload
+    };
+
+    // jsonSourceAsString - optional json string to load instead of file. Mostly for tests.
+    static std::shared_ptr<JsonLoader>& getInstance( Mode mode, std::string_view jsonSourceAsString = {} );
 };
 
 // Literal class type that wraps a constant expression string.
@@ -25,22 +32,42 @@ std::string_view toStringView()
     return { Lit.value };
 }
 
-// Key = "a.b.c"
-template <typename T, StringLiteral key>
+// Read any built-it type from Json. Throw exception if key not found. Key = "a.b.c"
+template <typename T, StringLiteral Key>
 const T& getConfig()
 {
-    static std::optional<T> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
+    static std::optional<T> valueOpt =
+        getElementByPath( Config::getInstance( Config::Mode::NoReload )->root(), toStringView<Key>() );
     return valueOpt.value();
 }
 
-// key = "a.b.c" with default value
-template <typename T, StringLiteral key, auto defaultValue>
+// Read json serializable type from Json. Throw exception if key not found. Key = "a.b.c"
+template <typename T, StringLiteral Key>
+    requires requires( T key ) { adl_serializer::from_json( std::declval<json&>(), key ); }
 const T& getConfig()
 {
-    static std::optional<T> valueOpt = getElementByPath( Config::getInstance()->root(), toStringView<key>() );
+    static std::optional<T> valueOpt;
 
     if ( !valueOpt.has_value() )
-        valueOpt = static_cast<T>( defaultValue );
+    {
+        json elementJson =
+            getElementByPath( Config::getInstance( Config::Mode::NoReload )->root(), toStringView<Key>() ).value();
+        T result;
+        adl_serializer::from_json( elementJson, result );
+        valueOpt = result;
+    }
+
+    return valueOpt.value();
+}
+
+// Read any type from Json with default value. Key = "a.b.c".
+template <typename T, StringLiteral Key, auto DefaultValue>
+const T& getConfig()
+{
+    static std::optional<T> valueOpt = getConfig<T, Key>();
+
+    if ( !valueOpt.has_value() )
+        valueOpt = static_cast<T>( DefaultValue );
 
     return valueOpt.value();
 }

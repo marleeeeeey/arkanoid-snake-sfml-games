@@ -41,10 +41,10 @@ void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTi
         m_paddleState = PaddleState::Attack;
     }
 
-    static const auto speed_pxps = getConfig<float, "game.objects.paddle.speed">();
+    const auto& speed_pxps = getConfig<float, "game.objects.paddle.speed">();
     float elapsedSec = elapsedTime.asSeconds();
     float absOffset = speed_pxps * elapsedSec;
-    static const auto damping = getConfig<float, "game.objects.paddle.damping">();
+    const auto& damping = getConfig<float, "game.objects.paddle.damping">();
     float absDampingOffset = absOffset * damping;
 
     switch ( m_paddleState )
@@ -97,7 +97,7 @@ void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
             m_originalSize = size;
 
         size = m_originalSize.value();
-        auto longSizeFactor = getConfig<float, "game.objects.paddle.longSizeFactor">();
+        const auto& longSizeFactor = getConfig<float, "game.objects.paddle.longSizeFactor">();
         size.x *= longSizeFactor;
         state().setSize( size );
     }
@@ -156,7 +156,7 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
         }
         if ( ball )
         {
-            static const auto angleSensivity = getConfig<float, "game.objects.paddle.angle_sensitivity">();
+            const auto& angleSensivity = getConfig<float, "game.objects.paddle.angle_sensitivity">();
             float angleShift = angleSensivity * getShiftCoef( shared_from_this(), obj );
             rotateDegInPlace( ball->velocity(), angleShift );
             if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_paddleState != PaddleState::Attack )

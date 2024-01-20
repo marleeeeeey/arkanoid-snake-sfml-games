@@ -15,9 +15,9 @@ int main()
     std::filesystem::path currentDir = std::filesystem::current_path();
     MY_LOG_FMT( info, "Starting Arkanoid game from {}", currentDir.string() );
 
-    static const auto windowWidth = getConfig<float, "window.width", 600>();
-    static const auto windowHeight = getConfig<float, "window.height", 800>();
-    static const auto windowFrameRate = getConfig<int, "window.frameRate", 60>();
+    const auto& windowWidth = getConfig<float, "window.width", 600>();
+    const auto& windowHeight = getConfig<float, "window.height", 800>();
+    const auto& windowFrameRate = getConfig<int, "window.frameRate", 60>();
 
     sf::Vector2f windowSize = { windowWidth, windowHeight };
     auto objectFactory = std::make_shared<ObjectFactory>();

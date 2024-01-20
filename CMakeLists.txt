@@ -10,6 +10,8 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(magic_enum CONFIG REQUIRED)
+
 
 function(link_gtest TGT)
     target_include_directories(${TGT} PRIVATE ${GTEST_INCLUDE_DIRS})
@@ -23,6 +25,7 @@ function(link_external_libs TGT)
     target_link_libraries(${TGT} PRIVATE spdlog::spdlog)
     target_link_libraries(${TGT} PRIVATE nlohmann_json::nlohmann_json)
     target_link_libraries(${TGT} PRIVATE glm::glm)
+    target_link_libraries(${TGT} PRIVATE magic_enum::magic_enum)
 endfunction()
 
 # ********************************* COMMON HELPERS *********************************
@@ -52,8 +55,10 @@ endfunction()
 function(add_gtest TGT)
     set(UNIT_TARGET ${TGT}_gtest)
     set(TEST_TARGET ${TGT}_gtest_target)
+    set(GAME_PCH ${PCH})
 
     add_executable(${UNIT_TARGET} ${TEST_SRCS})
+    target_precompile_headers(${UNIT_TARGET} PRIVATE ${GAME_PCH})
     link_gtest(${UNIT_TARGET})
     link_external_libs(${UNIT_TARGET})
     target_link_libraries(${UNIT_TARGET} PRIVATE utils)

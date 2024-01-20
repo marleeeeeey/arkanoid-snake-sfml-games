@@ -9,8 +9,7 @@ TEST( StringLiteral, Basics )
 
 TEST( UtilsConfig, ReadValues )
 {
-    // Force creation to override default config file
-    Config::getInstance( R"( { "hello": 123 } )" );
+    Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
 
     auto value = getConfig<int, "hello">();
     ASSERT_EQ( value, 123 );
@@ -24,8 +23,7 @@ TEST( UtilsConfig, ReadValues )
 
 TEST( UtilsConfig, ReadValuesIntToFloat )
 {
-    // Force creation to override default config file
-    Config::getInstance( R"( { "hello": 123 } )" );
+    Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
 
     auto windowsWidth = getConfig<float, "window.width", 600>();
     ASSERT_EQ( windowsWidth, 600 );

@@ -6,7 +6,7 @@
 
 class Ball : public DefaultObject, public IDynamicObject, public IBonusOwner, public IHaveParent
 {
-    glm::vec2 m_velocity;
+    glm::vec2 m_velocity{};
     std::optional<Collision> m_biggestCollision;
     std::optional<BonusType> m_bonusType;
     std::optional<std::shared_ptr<IObject>> m_parent;

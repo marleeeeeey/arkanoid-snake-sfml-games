@@ -3,12 +3,12 @@
 
 JsonLoader::JsonLoader() = default;
 
-Json& JsonLoader::root()
+json& JsonLoader::root()
 {
     return root_;
 }
 
-const Json& JsonLoader::root() const
+const json& JsonLoader::root() const
 {
     return root_;
 }
@@ -74,7 +74,7 @@ bool JsonLoader::loadFromString( std::string_view jsonString )
 {
     try
     {
-        root_ = Json::parse( jsonString );
+        root_ = json::parse( jsonString );
         return true;
     }
     catch ( const std::exception& e )
@@ -84,9 +84,9 @@ bool JsonLoader::loadFromString( std::string_view jsonString )
     }
 }
 
-std::optional<Json> getElementByPath( const Json& jsonData, std::string_view path )
+std::optional<json> getElementByPath( const json& jsonData, std::string_view path )
 {
-    Json currentNode = jsonData;
+    json currentNode = jsonData;
     std::istringstream ss( path.data() );
     std::string segment;
 

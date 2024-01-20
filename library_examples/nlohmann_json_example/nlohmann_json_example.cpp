@@ -3,12 +3,12 @@
 #include <nlohmann/json.hpp>
 #include "gtest/gtest.h"
 
-using Json = nlohmann::json;
+using json = nlohmann::json;
 
 // Function to access data at a specified path within JSON
-std::optional<Json> getElementByPath( const Json& jsonData, const std::string& path )
+std::optional<json> getElementByPath( const json& jsonData, const std::string& path )
 {
-    Json currentNode = jsonData;
+    json currentNode = jsonData;
     std::istringstream ss( path );
     std::string segment;
 
@@ -60,8 +60,8 @@ TEST( Json, Basics )
     }
     )json";
 
-    Json parsed = Json::parse( jsonDoc );
-    Json childrenJson = getElementByPath( parsed, "info.children" ).value();
+    json parsed = json::parse( jsonDoc );
+    json childrenJson = getElementByPath( parsed, "info.children" ).value();
 
     Children childrenOne;
     childrenOne.name = childrenJson["name"];
