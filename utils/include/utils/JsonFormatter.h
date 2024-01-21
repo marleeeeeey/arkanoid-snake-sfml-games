@@ -5,6 +5,7 @@
 
 struct adl_serializer
 {
+    // Convert any enum to json
     template <typename T>
         requires requires( T enumValue ) { magic_enum::enum_name( enumValue ); }
     static void to_json( json& j, const T& enumValue )
@@ -12,6 +13,7 @@ struct adl_serializer
         j = magic_enum::enum_name( enumValue );
     }
 
+    // Convert any enum from json
     template <typename T>
         requires requires( T ) { magic_enum::enum_cast<T>( std::declval<json&>().get<std::string>() ).value(); }
     static void from_json( const json& j, T& enumValue )

@@ -1,14 +1,7 @@
 #include <gtest/gtest.h>
 #include <utils/Config.h>
 
-TEST( SfmlKeyboardKey, CheckFmtFormat )
-{
-    json jsonKey( "A" );
-    auto result = fmt::format( "jsonValue={}", jsonKey );
-    EXPECT_EQ( result, "jsonValue=\"A\"" );
-}
-
-TEST( SfmlKeyboardKey, ReadKeyboardFromConfigManually )
+TEST( UtilsConfigReadEnums, MagicEnumCast )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "controls": { "left": "X" } } )" );
     const auto& left = getConfig<std::string, "controls.left">();
@@ -16,7 +9,7 @@ TEST( SfmlKeyboardKey, ReadKeyboardFromConfigManually )
     EXPECT_EQ( leftKey, sf::Keyboard::Key::X );
 }
 
-TEST( SfmlKeyboardKey, CheckJsonSerialization )
+TEST( UtilsConfigReadEnums, AdlSerializerCast )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "controls": { "left": "X" } } )" );
 
@@ -31,7 +24,7 @@ TEST( SfmlKeyboardKey, CheckJsonSerialization )
     EXPECT_EQ( sfmlKey2, sfmlKey );
 }
 
-TEST( SfmlKeyboardKey, ReadKeyboardFromConfigAuto )
+TEST( UtilsConfigReadEnums, GetConfigCast )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "controls": { "left": "X" } } )" );
 

@@ -86,7 +86,7 @@ endfunction()
 # ********************************* SUBDIRECTORIES *********************************
 add_subdirectory(utils)
 add_subdirectory(arkanoid)
-add_subdirectory(library_examples)
-add_subdirectory(utils_examples)
+add_subdirectory(libraries_tests)
+add_subdirectory(utils_tests)
 
 install()

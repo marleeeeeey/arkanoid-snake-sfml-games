@@ -7,12 +7,17 @@ TEST( StringLiteral, Basics )
     ASSERT_EQ( stringView, "literal string" );
 }
 
-TEST( UtilsConfig, ReadValues )
+TEST( UtilsConfig, ReadIntValue )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
 
     auto value = getConfig<int, "hello">();
     ASSERT_EQ( value, 123 );
+}
+
+TEST( UtilsConfig, ReadDefaultValues )
+{
+    Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
 
     auto value2 = getConfig<int, "hello", 456>();
     ASSERT_EQ( value2, 123 );
@@ -21,7 +26,7 @@ TEST( UtilsConfig, ReadValues )
     ASSERT_EQ( value3, 456 );
 }
 
-TEST( UtilsConfig, ReadValuesIntToFloat )
+TEST( UtilsConfig, ReadFloatValue )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
 
