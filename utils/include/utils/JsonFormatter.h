@@ -1,7 +1,6 @@
 // ReSharper disable CppInconsistentNaming
 #pragma once
 #include <fmt/format.h>
-#include <utils/JsonFormatterUserDefined.h>
 
 struct adl_serializer
 {
@@ -20,6 +19,30 @@ struct adl_serializer
     {
         enumValue = magic_enum::enum_cast<T>( j.get<std::string>() ).value();
     }
+
+    // ***************************************************************
+    // ***************************************************************
+    // ***************************************************************
+
+    // In this place define cutom rules to serialize/deserialize to json.
+    // These rules will be also used for fmt::format.
+
+    template <typename T>
+    static void to_json( json& j, const sf::Vector2<T>& data )
+    {
+        j = json{ { "x", data.x }, { "y", data.y } };
+    }
+
+    template <typename T>
+    static void from_json( const json& j, sf::Vector2<T>& data )
+    {
+        data.x = j.at( "x" ).get<T>();
+        data.y = j.at( "y" ).get<T>();
+    }
+
+    // ***************************************************************
+    // ***************************************************************
+    // ***************************************************************
 };
 
 // Format any json
