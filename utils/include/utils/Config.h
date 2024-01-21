@@ -32,13 +32,21 @@ std::string_view toStringView()
     return { Lit.value };
 }
 
+// Read any built-it type from Json. Return optional. Key = "a.b.c"
+template <typename T, StringLiteral Key>
+std::optional<T>& getConfigOpt()
+{
+    static std::optional<T> result =
+        getElementByPath( Config::getInstance( Config::Mode::NoReload )->root(), toStringView<Key>() );
+    return result;
+}
+
 // Read any built-it type from Json. Throw exception if key not found. Key = "a.b.c"
 template <typename T, StringLiteral Key>
 const T& getConfig()
 {
-    static std::optional<T> valueOpt =
-        getElementByPath( Config::getInstance( Config::Mode::NoReload )->root(), toStringView<Key>() );
-    return valueOpt.value();
+    static std::optional<T>& result = getConfigOpt<T, Key>();
+    return result.value();
 }
 
 // Read json serializable type from Json. Throw exception if key not found. Key = "a.b.c"
@@ -50,8 +58,7 @@ const T& getConfig()
 
     if ( !valueOpt.has_value() )
     {
-        json elementJson =
-            getElementByPath( Config::getInstance( Config::Mode::NoReload )->root(), toStringView<Key>() ).value();
+        json elementJson = getConfigOpt<json, Key>().value();
         T result;
         adl_serializer::from_json( elementJson, result );
         valueOpt = result;
@@ -64,7 +71,7 @@ const T& getConfig()
 template <typename T, StringLiteral Key, auto DefaultValue>
 const T& getConfig()
 {
-    static std::optional<T> valueOpt = getConfig<T, Key>();
+    static std::optional<T> valueOpt = getConfigOpt<T, Key>();
 
     if ( !valueOpt.has_value() )
         valueOpt = static_cast<T>( DefaultValue );

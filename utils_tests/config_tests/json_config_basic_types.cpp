@@ -9,27 +9,24 @@ TEST( StringLiteral, Basics )
 
 TEST( UtilsConfig, ReadIntValue )
 {
-    Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
+    Config::getInstance( Config::Mode::ForceReload, R"( { "intValue": 123 } )" );
 
-    auto value = getConfig<int, "hello">();
-    ASSERT_EQ( value, 123 );
+    auto intValue = getConfig<int, "intValue">();
+    ASSERT_EQ( intValue, 123 );
 }
 
 TEST( UtilsConfig, ReadDefaultValues )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
 
-    auto value2 = getConfig<int, "hello", 456>();
-    ASSERT_EQ( value2, 123 );
-
-    auto value3 = getConfig<int, "hello2", 456>();
-    ASSERT_EQ( value3, 456 );
+    auto noExistingValue = getConfig<int, "noExistingValue", 456>();
+    ASSERT_EQ( noExistingValue, 456 );
 }
 
 TEST( UtilsConfig, ReadFloatValue )
 {
-    Config::getInstance( Config::Mode::ForceReload, R"( { "hello": 123 } )" );
+    Config::getInstance( Config::Mode::ForceReload, R"( { "floatValue": 123.5 } )" );
 
-    auto windowsWidth = getConfig<float, "window.width", 600>();
-    ASSERT_EQ( windowsWidth, 600 );
+    auto floatValue = getConfig<float, "floatValue", 600>();
+    ASSERT_EQ( floatValue, 123.5 );
 }
