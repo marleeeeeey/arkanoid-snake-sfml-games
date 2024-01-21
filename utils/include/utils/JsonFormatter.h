@@ -18,7 +18,7 @@ struct adl_serializer
         requires requires( T ) { magic_enum::enum_cast<T>( std::declval<json&>().get<std::string>() ).value(); }
     static void from_json( const json& j, T& enumValue )
     {
-        enumValue = magic_enum::enum_cast<sf::Keyboard::Key>( j.get<std::string>() ).value();
+        enumValue = magic_enum::enum_cast<T>( j.get<std::string>() ).value();
     }
 };
 

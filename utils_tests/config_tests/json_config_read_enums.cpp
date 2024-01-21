@@ -28,6 +28,21 @@ TEST( UtilsConfigReadEnums, GetConfigCast )
 {
     Config::getInstance( Config::Mode::ForceReload, R"( { "controls": { "left": "X" } } )" );
 
-    const json& leftKey = getConfig<sf::Keyboard::Key, "controls.left">();
+    const auto& leftKey = getConfig<sf::Keyboard::Key, "controls.left">();
     EXPECT_EQ( leftKey, sf::Keyboard::Key::X );
+}
+
+TEST( UtilsConfigReadEnums, FreeEnum )
+{
+    Config::getInstance( Config::Mode::ForceReload, R"( { "controls": { "left": "X" } } )" );
+
+    enum class MyEnum
+    {
+        X,
+        Y,
+        Z,
+    };
+
+    const auto& leftKey = getConfig<MyEnum, "controls.left">();
+    EXPECT_EQ( leftKey, MyEnum::X );
 }
