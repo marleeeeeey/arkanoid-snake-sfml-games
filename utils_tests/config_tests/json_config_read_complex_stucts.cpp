@@ -9,3 +9,12 @@ TEST( UtilsConfigReadComplexStructs, ReadSfVector2 )
     sf::Vector2i expextedPoint{ 100, 200 };
     EXPECT_EQ( readPoint, expextedPoint );
 }
+
+TEST( UtilsConfigReadComplexStructs, FmtSfVector2 )
+{
+    Config::getInstance( Config::Mode::ForceReload, R"( { "point": { "x": 100, "y" : 200 } } )" );
+
+    auto readPoint = getConfig<sf::Vector2i, "point">();
+    auto resultFmt = fmt::format( "point={}", readPoint );
+    EXPECT_EQ( resultFmt, "point={\"x\":100,\"y\":200}" );
+}
