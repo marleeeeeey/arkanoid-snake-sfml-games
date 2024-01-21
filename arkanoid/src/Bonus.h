@@ -13,6 +13,6 @@ public:
     void calcState( std::optional<sf::Event> event, sf::Time elapsedTime ) override;
     void draw( sf::RenderWindow& window ) override;
     std::optional<BonusType>& bonusType() override;
-    std::shared_ptr<IObject> createCopyFromThis() override;
+    std::shared_ptr<IObject> clone() override;
     std::string name() override;
 };

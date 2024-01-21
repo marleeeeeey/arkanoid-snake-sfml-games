@@ -2,18 +2,21 @@
   "window": {
     "width": 1000,
     "height": 800,
-    "frameRate": 60
+    "frameRate": 120
   },
   "game": {
     "objects": {
       "ball": {
-        "initialSpeed": 400
+        "initialSpeed": 500
       },
       "paddle": {
         "speed": 800,
         "damping": 0.06,
         "longSizeFactor": 1.5,
-        "angle_sensitivity": 35
+        "angleSensitivity": 35
+      },
+      "bonus": {
+        "speed": 300
       }
     }
   }

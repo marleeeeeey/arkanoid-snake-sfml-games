@@ -9,7 +9,7 @@ const float ballMaxSpeed = ballInitialSpeed * 1.5f;
 
 Ball::Ball()
 {
-    int angle = randomInt( -70, -50 );
+    int angle = glm::linearRand( -70, -50 );
     angle = randomBool() ? angle : -angle;
     m_velocity = vectorFromDirectionAndLength( angle, ballInitialSpeed );
     DefaultObject::state().setSize( { 20, 20 } );
@@ -36,14 +36,14 @@ Collision getBiggestCollision( std::vector<Collision>& collisions )
 
 void Ball::changeDirection()
 {
-    auto cs = m_biggestCollision.value().getCollisionRect().getSize();
+    auto collisionSize = m_biggestCollision.value().getCollisionRect().getSize();
 
-    if ( isEqual( cs.x, cs.y ) )
+    if ( isEqual( collisionSize.x, collisionSize.y ) )
     {
         m_velocity.x *= -1;
         m_velocity.y *= -1;
     }
-    else if ( cs.x > cs.y )
+    else if ( collisionSize.x > collisionSize.y )
     {
         m_velocity.y *= -1;
     }
@@ -58,8 +58,7 @@ void Ball::stealLiveFromOneDestructibleObject( const std::vector<Collision>& col
     std::vector<std::shared_ptr<IDestructible>> desctructibleObjects;
     for ( auto collision : collisions )
     {
-        auto desctructible = std::dynamic_pointer_cast<IDestructible>( collision.getObject() );
-        if ( desctructible )
+        if ( auto desctructible = std::dynamic_pointer_cast<IDestructible>( collision.getObject() ) )
         {
             desctructibleObjects.push_back( desctructible );
         }
@@ -67,9 +66,8 @@ void Ball::stealLiveFromOneDestructibleObject( const std::vector<Collision>& col
 
     if ( !desctructibleObjects.empty() )
     {
-        auto& biggestObjectLives = desctructibleObjects.front()->lives();
-        if ( biggestObjectLives )
-            biggestObjectLives.value()--;
+        if ( auto& frontObjectLives = desctructibleObjects.front()->lives() )
+            frontObjectLives.value()--;
     }
 }
 
@@ -84,11 +82,7 @@ void Ball::onBumping( std::vector<Collision>& collisions )
             auto collision = m_biggestCollision.value();
             auto collisionObject = collision.getObject();
             auto desctuctibleObject = std::dynamic_pointer_cast<IDestructible>( collisionObject );
-            if ( desctuctibleObject && desctuctibleObject->lives() )
-            {
-                // do nothing
-            }
-            else
+            if ( !desctuctibleObject || !desctuctibleObject->lives() )
             {
                 changeDirection();
             }
@@ -159,7 +153,7 @@ void Ball::draw( sf::RenderWindow& window )
     window.draw( circleShape );
 }
 
-std::shared_ptr<IObject> Ball::createCopyFromThis()
+std::shared_ptr<IObject> Ball::clone()
 {
     auto createdObjectPtr = std::make_shared<Ball>();
     Ball& createdObject = *createdObjectPtr.get();

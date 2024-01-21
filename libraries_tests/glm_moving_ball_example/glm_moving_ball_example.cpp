@@ -1,6 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include <glm/glm.hpp>
-#include <iostream>
+
 
 int main()
 {

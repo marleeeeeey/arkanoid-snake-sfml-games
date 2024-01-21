@@ -1,5 +1,4 @@
 #include <utils/JsonLoader.h>
-#include <utils/Logger.h>
 
 JsonLoader::JsonLoader() = default;
 

@@ -10,7 +10,7 @@ class PauseMenu : public DefaultObject
 public:
     PauseMenu();
     std::string name() override;
-    std::shared_ptr<IObject> createCopyFromThis() override;
+    std::shared_ptr<IObject> clone() override;
     void draw( sf::RenderWindow& window ) override;
     void calcState( std::optional<sf::Event> event, sf::Time elapsedTime ) override;
     bool isVisible() override;

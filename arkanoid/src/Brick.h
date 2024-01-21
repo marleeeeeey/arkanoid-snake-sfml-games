@@ -13,6 +13,6 @@ public:
     void onBumping( std::vector<Collision>& collisions ) override;
     std::optional<int>& lives() override;
     std::optional<BonusType>& bonusType() override;
-    std::shared_ptr<IObject> createCopyFromThis() override;
+    std::shared_ptr<IObject> clone() override;
     std::string name() override;
 };

@@ -49,7 +49,7 @@ std::optional<BonusType>& Brick::bonusType()
     return m_bonusType;
 }
 
-std::shared_ptr<IObject> Brick::createCopyFromThis()
+std::shared_ptr<IObject> Brick::clone()
 {
     auto createdObjectPtr = std::make_shared<Brick>();
     Brick& createdObject = *createdObjectPtr.get();

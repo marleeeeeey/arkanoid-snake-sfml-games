@@ -78,7 +78,7 @@ void World::initCollisionProcessors()
 
                 if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::MultiBalls )
                 {
-                    int ballsNumber = randomInt( 1, 3 );
+                    int ballsNumber = glm::linearRand( 1, 3 );
                     auto createdBalls = generateNewBalls( ballsNumber );
                     m_balls.insert( m_balls.end(), createdBalls.begin(), createdBalls.end() );
                     unsigned maxNumberOfBalls = 30;
@@ -130,9 +130,9 @@ std::vector<std::shared_ptr<IObject>> World::generateNewBalls( size_t ballsNumbe
     {
         for ( const auto& existingBall : m_balls )
         {
-            auto createdBall = existingBall->createCopyFromThis();
+            auto createdBall = existingBall->clone();
             auto createdBallDynamicObject = std::dynamic_pointer_cast<IDynamicObject>( createdBall );
-            auto randomAngle = randomInt( 5, 355 );
+            auto randomAngle = glm::linearRand( 5, 355 );
             rotateDegInPlace( createdBallDynamicObject->velocity(), randomAngle );
             createdBalls.push_back( createdBall );
             if ( createdBalls.size() == ballsNumber )
@@ -150,7 +150,7 @@ void World::initPlates()
     paddle->state().setSize( { m_windowSize.x * paddleKoefSize, m_windowSize.y * paddleKoefThinkness } );
     paddle->state().setPos( { m_windowSize.x / 2, m_windowSize.y * ( 1 - paddleKoefThinkness ) } );
     paddle->setOnBumpingCallBack( [&]( auto, const std::vector<Collision>& collisions )
-                                 { m_scopes += collisions.size(); } );
+                                  { m_scopes += collisions.size(); } );
     m_plates.push_back( paddle );
 }
 

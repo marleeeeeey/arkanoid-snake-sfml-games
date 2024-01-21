@@ -28,12 +28,12 @@ std::vector<Level> LevelGenerator::getSymbolLevels()
 
     if ( loadedLevels.empty() )
     {
-        m_currentLevelNumber += randomInt( 0, standartLevels.size() - 1 );
+        m_currentLevelNumber += glm::linearRand<int>( 0, standartLevels.size() - 1 );
         return standartLevels;
     }
     else
     {
-        m_currentLevelNumber += randomInt( 0, loadedLevels.size() - 1 );
+        m_currentLevelNumber += glm::linearRand<int>( 0, loadedLevels.size() - 1 );
         return loadedLevels;
     }
 }
@@ -130,7 +130,7 @@ LevelGenerator::LevelGenerator( std::shared_ptr<IObjectFactory> objectFactory, s
 
 void LevelGenerator::changeLevel()
 {
-    m_currentLevelNumber += randomInt( 0, m_levels.size() - 1 );
+    m_currentLevelNumber += glm::linearRand<int>( 0, m_levels.size() - 1 );
 }
 
 std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()

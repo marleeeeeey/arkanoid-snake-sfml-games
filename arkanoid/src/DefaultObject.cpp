@@ -11,7 +11,7 @@ std::vector<Collision> getCollisions(
             continue;
 
         // Add collision if exists.
-        if ( auto collision = getIntersectRectShape(
+        if ( auto collision = calcIntersectRectShape(
                  object->state().getCollisionRect(), secondaryObject->state().getCollisionRect() ) )
         {
             collisions.emplace_back( secondaryObject, collision.value() );

@@ -1,6 +1,5 @@
 #pragma once
 #include <utils/JsonLoader.h>
-#include <utils/Logger.h>
 #include <utils/JsonFormatter.h>
 
 // TODO: check incorrect usage of config parameters on application start

@@ -1,6 +1,5 @@
 // ReSharper disable CppInconsistentNaming
 #pragma once
-#include <fmt/format.h>
 
 struct adl_serializer
 {

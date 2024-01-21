@@ -12,14 +12,14 @@ void setOriginPointInCenter( sf::Shape& shape )
 
 } // namespace
 
-sf::RectangleShape createRectangleShape( sf::Vector2f size, sf::Vector2f pos, bool isCenter )
+sf::RectangleShape createRectangleShape( sf::Vector2f size, sf::Vector2f pos, Anchor relativity )
 {
     sf::RectangleShape shape( size );
     shape.setPosition( pos );
     shape.setFillColor( sf::Color::Transparent );
     shape.setOutlineColor( sf::Color::White );
     shape.setOutlineThickness( 2 );
-    if ( !isCenter )
+    if ( relativity != Anchor::Center )
     {
         shape.move( { size.x / 2, size.y / 2 } );
     }
@@ -29,7 +29,7 @@ sf::RectangleShape createRectangleShape( sf::Vector2f size, sf::Vector2f pos, bo
 
 sf::RectangleShape createRectangleShape( const sf::FloatRect& rect )
 {
-    return createRectangleShape( { rect.width, rect.height }, { rect.left, rect.top }, false );
+    return createRectangleShape( { rect.width, rect.height }, { rect.left, rect.top }, Anchor::TopLeft );
 }
 
 sf::CircleShape createCircleShape( const float radius, const sf::Vector2f pos )
@@ -52,23 +52,20 @@ sf::RectangleShape extractInsideRectShape( const sf::CircleShape& circleShape )
     return rectShape;
 }
 
-std::optional<sf::FloatRect> getIntersectRect( const sf::Shape& shape1, const sf::Shape& shape2 )
+std::optional<sf::FloatRect> calcIntersectRect( const sf::Shape& shape1, const sf::Shape& shape2 )
 {
     const auto& insideRect = shape1.getGlobalBounds();
     const auto& rect = shape2.getGlobalBounds();
     sf::FloatRect outFloatRect;
-    auto isIntersect = insideRect.intersects( rect, outFloatRect );
-    if ( isIntersect )
+    if ( insideRect.intersects( rect, outFloatRect ) )
         return outFloatRect;
 
     return {};
 }
 
-std::optional<sf::RectangleShape> getIntersectRectShape( const sf::Shape& shape1, const sf::Shape& shape2 )
+std::optional<sf::RectangleShape> calcIntersectRectShape( const sf::Shape& shape1, const sf::Shape& shape2 )
 {
-    auto instersectRect = getIntersectRect( shape1, shape2 );
-
-    if ( instersectRect )
+    if ( auto instersectRect = calcIntersectRect( shape1, shape2 ) )
     {
         auto rectShape = createRectangleShape( instersectRect.value() );
         rectShape.setOutlineThickness( 0 );
@@ -81,7 +78,7 @@ std::optional<sf::RectangleShape> getIntersectRectShape( const sf::Shape& shape1
 
 bool isIntersect( const sf::Shape& shape1, const sf::Shape& shape2 )
 {
-    return getIntersectRect( shape1, shape2 ).has_value();
+    return calcIntersectRect( shape1, shape2 ).has_value();
 }
 
 sf::Color getAlphaColor( sf::Color color, sf::Uint8 alpha )
@@ -125,7 +122,7 @@ glm::vec2 vectorFromDirectionAndLength( float angleDegrees, float length )
     return result;
 }
 
-void setTextCenterTo( sf::Text& text, sf::Vector2f centerPos )
+void updateTextCenter( sf::Text& text, sf::Vector2f centerPos )
 {
     text.setPosition( centerPos );
     auto textRect = createRectangleShape( text.getGlobalBounds() );

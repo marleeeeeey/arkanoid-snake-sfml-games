@@ -9,7 +9,7 @@ Bonus::Bonus()
 
 void Bonus::calcState( [[maybe_unused]] std::optional<sf::Event> event, sf::Time elapsedTime )
 {
-    sf::Vector2f speed = { 0, 100 };
+    sf::Vector2f speed = { 0, getConfig<float, "game.objects.bonus.speed">() * glm::linearRand( 1.0f, 2.0f ) };
 
     auto pos = state().getPos();
     sf::Vector2f offset = { elapsedTime.asSeconds() * speed.x, elapsedTime.asSeconds() * speed.y };
@@ -35,7 +35,7 @@ void Bonus::draw( sf::RenderWindow& window )
         text.setFont( m_font );
         text.setFillColor( sf::Color::Black );
         text.setString( toString( m_bonusType.value() ) );
-        setTextCenterTo( text, state().getPos() );
+        updateTextCenter( text, state().getPos() );
         window.draw( shape );
         window.draw( text );
     }
@@ -50,12 +50,9 @@ std::optional<BonusType>& Bonus::bonusType()
     return m_bonusType;
 }
 
-std::shared_ptr<IObject> Bonus::createCopyFromThis()
+std::shared_ptr<IObject> Bonus::clone()
 {
-    auto createdObjectPtr = std::make_shared<Bonus>();
-    Bonus& createdObject = *createdObjectPtr.get();
-    createdObject = *this;
-    return createdObjectPtr;
+    return std::make_shared<Bonus>( *this );
 }
 
 std::string Bonus::name()

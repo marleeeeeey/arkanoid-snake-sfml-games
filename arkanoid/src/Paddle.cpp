@@ -128,7 +128,7 @@ void Paddle::draw( sf::RenderWindow& window )
         text.setFont( font );
         text.setString( toString( m_bonusType.value() ) );
         text.setFillColor( sf::Color::Blue );
-        setTextCenterTo( text, state().getPos() );
+        updateTextCenter( text, state().getPos() );
         window.draw( text );
     }
 }
@@ -156,7 +156,7 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
         }
         if ( ball )
         {
-            const auto& angleSensivity = getConfig<float, "game.objects.paddle.angle_sensitivity">();
+            const auto& angleSensivity = getConfig<float, "game.objects.paddle.angleSensitivity">();
             float angleShift = angleSensivity * getShiftCoef( shared_from_this(), obj );
             rotateDegInPlace( ball->velocity(), angleShift );
             if ( m_bonusType && m_bonusType.value() == BonusType::MagnetPaddle && m_paddleState != PaddleState::Attack )
@@ -191,7 +191,7 @@ std::optional<BonusType>& Paddle::bonusType()
     return m_bonusType;
 }
 
-std::shared_ptr<IObject> Paddle::createCopyFromThis()
+std::shared_ptr<IObject> Paddle::clone()
 {
     auto createdObjectPtr = std::make_shared<Paddle>();
     Paddle& createdObject = *createdObjectPtr.get();

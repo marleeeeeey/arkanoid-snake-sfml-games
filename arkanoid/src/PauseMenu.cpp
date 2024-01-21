@@ -12,7 +12,7 @@ std::string PauseMenu::name()
     return "PauseMenu";
 }
 
-std::shared_ptr<IObject> PauseMenu::createCopyFromThis()
+std::shared_ptr<IObject> PauseMenu::clone()
 {
     return shared_from_this();
 }
@@ -36,7 +36,7 @@ void PauseMenu::draw( sf::RenderWindow& window )
 
     text.setFillColor( getAlphaColor( sf::Color::White, alpha ) );
     text.setString( "PAUSE" );
-    setTextCenterTo( text, state().getPos() );
+    updateTextCenter( text, state().getPos() );
     window.draw( shape );
     window.draw( text );
 }

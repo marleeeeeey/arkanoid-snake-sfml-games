@@ -1,31 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <nlohmann/json.hpp>
-#include "gtest/gtest.h"
-
-using json = nlohmann::json;
-
-// Function to access data at a specified path within JSON
-std::optional<json> getElementByPath( const json& jsonData, const std::string& path )
-{
-    json currentNode = jsonData;
-    std::istringstream ss( path );
-    std::string segment;
-
-    while ( std::getline( ss, segment, '.' ) )
-    {
-        if ( currentNode.is_object() && currentNode.find( segment ) != currentNode.end() )
-        {
-            currentNode = currentNode[segment];
-        }
-        else
-        {
-            return {};
-        }
-    }
-
-    return currentNode;
-}
+#include <gtest/gtest.h>
 
 struct Children
 {
@@ -38,7 +11,7 @@ struct Children
     NLOHMANN_DEFINE_TYPE_INTRUSIVE( Children, name, age, data );
 };
 
-TEST( Json, Basics )
+TEST( NlohmannJson, BasicsFromManual )
 {
     std::string jsonDoc = R"json(
     {
