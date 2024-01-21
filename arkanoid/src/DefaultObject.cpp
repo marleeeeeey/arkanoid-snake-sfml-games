@@ -3,16 +3,16 @@
 std::vector<Collision> getCollisions(
     const std::shared_ptr<IObject>& object, const std::vector<std::shared_ptr<IObject>>& secondaryObjects )
 {
-    // TODO: improve it
     std::vector<Collision> collisions;
     for ( const auto& secondaryObject : secondaryObjects )
     {
+        // Skip self.
         if ( object == secondaryObject )
             continue;
 
-        auto collision =
-            getIntersectRectShape( object->state().getCollisionRect(), secondaryObject->state().getCollisionRect() );
-        if ( collision )
+        // Add collision if exists.
+        if ( auto collision = getIntersectRectShape(
+                 object->state().getCollisionRect(), secondaryObject->state().getCollisionRect() ) )
         {
             collisions.emplace_back( secondaryObject, collision.value() );
         }
@@ -23,17 +23,17 @@ std::vector<Collision> getCollisions(
 
 void DefaultObject::onBumping( std::vector<Collision>& collisions )
 {
-    // do nothing
+    // TODO: remove this method (do nothing).
 }
 
 void DefaultObject::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 {
-    // do nothing
+    // TODO: remove this method (do nothing).
 }
 
 void DefaultObject::draw( sf::RenderWindow& window )
 {
-    // do nothing
+    // TODO: remove this method (do nothing).
 }
 
 ObjectState& DefaultObject::state()

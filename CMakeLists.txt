@@ -30,7 +30,7 @@ endfunction()
 
 # ********************************* COMMON HELPERS *********************************
 function(set_compile_settings TGT)
-    # TODO
+    # TODO: Update Cpp code to pass -Wall -Werror
     # target_compile_options(${TGT} PRIVATE -Wall -Werror -Wno-c++98-compat)
     target_compile_features(${TGT} PRIVATE cxx_std_20)
 endfunction()

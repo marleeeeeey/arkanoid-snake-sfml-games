@@ -8,6 +8,7 @@
  *  - It should keep always visible variables in the map.
  *    - They should be placed in game header.
  *  - Temporary notification should be shown for 3 seconds in the center of the screen.
+ * TODO: Create integration test to check if bonus objects are created correctly in runtime.
  */
 
 int main()

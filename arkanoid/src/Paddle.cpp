@@ -64,7 +64,7 @@ void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTi
         m_offset = absOffset;
         break;
     case PaddleState::Attack:
-        // TODO
+        // TODO implement attack for paddle
         break;
     }
 }
@@ -174,7 +174,7 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
                 {
                     auto childBall = std::dynamic_pointer_cast<IHaveParent>( magnetBall );
                     childBall->removeParent();
-                    // TODO refactor it
+                    // TODO: improve calcualtioan of angle when ball is magnetized
                     float maxAngle_deg = 45;
                     float angle = maxAngle_deg * getShiftCoef( shared_from_this(), magnetBall ) - 90;
                     auto dynamicBall = std::dynamic_pointer_cast<IDynamicObject>( magnetBall );

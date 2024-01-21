@@ -24,8 +24,22 @@ struct adl_serializer
     // ***************************************************************
     // ***************************************************************
 
+    // Option 1: Add to_json/from_json to adl_serializer.
     // In this place define cutom rules to serialize/deserialize to json.
     // These rules will be also used for fmt::format.
+
+    // Option 2: Use NLOHMANN_DEFINE_TYPE_INTRUSIVE inside your own class/struct.
+    // Example:
+    // struct Address
+    // {
+    //     std::string street;
+    //     int housenumber{};
+    //     int postcode{};
+    //     auto operator<=>( const Address& ) const = default;
+    //     NLOHMANN_DEFINE_TYPE_INTRUSIVE( Address, street, housenumber, postcode )
+    // };
+
+    // ***************************************************************
 
     template <typename T>
     static void to_json( json& j, const sf::Vector2<T>& data )
