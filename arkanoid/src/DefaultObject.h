@@ -8,7 +8,7 @@ class DefaultObject : public IObject
     ObjectState m_state;
     OnBumpingCallback m_onBumpingCallback;
 protected:
-    bool haveCollisions( std::set<std::shared_ptr<IObject>> objects );
+    bool haveCollisions( const std::set<std::shared_ptr<IObject>>& objects );
 public:
     void checkBumping( std::vector<std::shared_ptr<IObject>>& objects ) override;
     void onBumping( std::vector<Collision>& collisions ) override;

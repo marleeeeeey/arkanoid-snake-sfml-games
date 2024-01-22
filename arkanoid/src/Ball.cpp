@@ -5,6 +5,7 @@ namespace
 {
 const float ballInitialSpeed = getConfig<float, "game.objects.ball.initialSpeed">();
 const float ballMaxSpeed = ballInitialSpeed * 1.5f;
+const float ballDiameter = getConfig<float, "game.objects.ball.diameter">();
 } // namespace
 
 Ball::Ball()
@@ -12,7 +13,7 @@ Ball::Ball()
     int angle = glm::linearRand( -70, -50 );
     angle = randomBool() ? angle : -angle;
     m_velocity = vectorFromDirectionAndLength( angle, ballInitialSpeed );
-    DefaultObject::state().setSize( { 20, 20 } );
+    DefaultObject::state().setSize( { ballDiameter, ballDiameter } );
 }
 
 float getArea( const sf::Vector2f& size )

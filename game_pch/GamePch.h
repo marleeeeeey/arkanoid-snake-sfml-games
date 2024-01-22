@@ -30,6 +30,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <fmt/format.h>
+// ReSharper disable once CppInconsistentNaming
 using json = nlohmann::json;
 
 // ************* My Utils *************

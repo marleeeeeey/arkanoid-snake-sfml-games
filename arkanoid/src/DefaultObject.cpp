@@ -1,7 +1,27 @@
 #include "DefaultObject.h"
 
-std::vector<Collision> getCollisions(
-    const std::shared_ptr<IObject>& object, const std::vector<std::shared_ptr<IObject>>& secondaryObjects )
+namespace
+{
+
+// Return true if two objects have collision. Return false if two objects are the same.
+bool haveCollision( const std::shared_ptr<IObject>& objectA, const std::shared_ptr<IObject>& objectB )
+{
+    if ( objectA == objectB )
+        return false;
+
+    return calcIntersectRectShape( objectA->state().getCollisionRect(), objectB->state().getCollisionRect() )
+        .has_value();
+}
+
+template <typename ObjectCollection>
+bool haveCollision( const std::shared_ptr<IObject>& object, const ObjectCollection& secondaryObjects )
+{
+    return std::ranges::any_of(
+        secondaryObjects, [&]( const auto& secondaryObject ) { return haveCollision( object, secondaryObject ); } );
+}
+
+template <typename ObjectCollection>
+std::vector<Collision> getCollisions( const std::shared_ptr<IObject>& object, const ObjectCollection& secondaryObjects )
 {
     std::vector<Collision> collisions;
     for ( const auto& secondaryObject : secondaryObjects )
@@ -20,6 +40,7 @@ std::vector<Collision> getCollisions(
 
     return collisions;
 }
+} // namespace
 
 void DefaultObject::onBumping( std::vector<Collision>& collisions )
 {
@@ -49,7 +70,10 @@ void DefaultObject::saveState()
 void DefaultObject::restoreState()
 {
     if ( m_savedState )
+    {
         m_state = m_savedState.value();
+        m_savedState = {};
+    }
 }
 
 bool DefaultObject::isVisible()
@@ -62,12 +86,9 @@ void DefaultObject::setOnBumpingCallBack( OnBumpingCallback cb )
     m_onBumpingCallback = cb;
 }
 
-bool DefaultObject::haveCollisions( std::set<std::shared_ptr<IObject>> objectsSet )
+bool DefaultObject::haveCollisions( const std::set<std::shared_ptr<IObject>>& objects )
 {
-    std::vector<std::shared_ptr<IObject>> objects;
-    std::ranges::copy( objectsSet, std::back_inserter( objects ) );
-    auto collisions = getCollisions( shared_from_this(), objects );
-    return !collisions.empty();
+    return haveCollision( shared_from_this(), objects );
 }
 
 void DefaultObject::checkBumping( std::vector<std::shared_ptr<IObject>>& objects )

@@ -7,7 +7,8 @@
   "game": {
     "objects": {
       "ball": {
-        "initialSpeed": 500
+        "initialSpeed": 500,
+        "diameter": 15
       },
       "paddle": {
         "speed": 800,
