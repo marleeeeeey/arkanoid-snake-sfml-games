@@ -19,7 +19,7 @@ void Brick::draw( sf::RenderWindow& window )
     }
     else
     {
-        const std::vector livesColor{
+        const static std::vector livesColor{
             sf::Color::White, sf::Color::Blue, sf::Color::Yellow, sf::Color::Green, sf::Color::Magenta,
         };
 

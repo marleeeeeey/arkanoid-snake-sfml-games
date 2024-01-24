@@ -16,7 +16,7 @@ class LevelGenerator : public ILevelGenerator
     float m_brickGap;
     std::vector<Level> loadedLevels;
     std::vector<Level> m_levels;
-    unsigned m_currentLevelNumber;
+    size_t m_currentLevelNumber;
 
     std::vector<Level> getSymbolLevels();
     void readLevelsFromTextFile();

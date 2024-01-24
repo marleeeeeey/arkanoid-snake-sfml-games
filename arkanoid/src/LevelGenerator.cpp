@@ -130,7 +130,7 @@ LevelGenerator::LevelGenerator( std::shared_ptr<IObjectFactory> objectFactory, s
 
 void LevelGenerator::changeLevel()
 {
-    m_currentLevelNumber += glm::linearRand<int>( 0, m_levels.size() - 1 );
+    m_currentLevelNumber += glm::linearRand<size_t>( 0, m_levels.size() - 1 );
 }
 
 std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()

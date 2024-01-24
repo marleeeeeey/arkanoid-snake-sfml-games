@@ -1,8 +1,8 @@
 #pragma once
 
-class IDynamicObject
+class IMovableObject
 {
 public:
-    virtual ~IDynamicObject() = default;
+    virtual ~IMovableObject() = default;
     virtual glm::vec2& velocity() = 0;
 };

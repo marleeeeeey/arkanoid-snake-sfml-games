@@ -1,6 +1,6 @@
 #include "Paddle.h"
 #include "IStaticObject.h"
-#include "IDynamicObject.h"
+#include "IMovableObject.h"
 #include "IHaveParent.h"
 
 Paddle::Paddle()
@@ -79,6 +79,7 @@ void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
     if ( haveCollisions( m_collisionWalls ) )
     {
         m_offset = 0;
+        // TODO: there is a bug. Replace restoreState() to calculation of new position without collision
         restoreState();
     }
     else
@@ -149,7 +150,7 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
     {
         auto obj = collision.getObject();
         auto wall = std::dynamic_pointer_cast<IStaticObject>( obj );
-        auto ball = std::dynamic_pointer_cast<IDynamicObject>( obj );
+        auto ball = std::dynamic_pointer_cast<IMovableObject>( obj );
         if ( wall )
         {
             m_collisionWalls.insert( obj );
@@ -177,7 +178,7 @@ void Paddle::onBumping( std::vector<Collision>& collisions )
                     // TODO: improve calcualtioan of angle when ball is magnetized
                     float maxAngle_deg = 45;
                     float angle = maxAngle_deg * getShiftCoef( shared_from_this(), magnetBall ) - 90;
-                    auto dynamicBall = std::dynamic_pointer_cast<IDynamicObject>( magnetBall );
+                    auto dynamicBall = std::dynamic_pointer_cast<IMovableObject>( magnetBall );
                     setAngle( dynamicBall->velocity(), angle );
                 }
                 m_magnetBalls.clear();

@@ -49,13 +49,3 @@ bool ObjectState::getDestroyFlag() const
 {
     return m_destroyFlag;
 }
-
-void ObjectState::setTimeStep( const sf::Time& timeStep )
-{
-    m_timeStep = timeStep;
-}
-
-sf::Time ObjectState::getTimeStep() const
-{
-    return m_timeStep;
-}

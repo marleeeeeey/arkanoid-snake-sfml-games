@@ -3,7 +3,6 @@
 class ObjectState
 {
     bool m_destroyFlag;
-    sf::Time m_timeStep;
     sf::RectangleShape m_collisionRect;
 public:
     ObjectState();
@@ -20,8 +19,4 @@ public:
 
     void setDestroyFlag( bool isDestroyed );
     bool getDestroyFlag() const;
-
-    // TODO: think if needed to keep timeStep for every ObjectState
-    void setTimeStep( const sf::Time& timeStep );
-    sf::Time getTimeStep() const;
 };

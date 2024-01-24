@@ -1,6 +1,6 @@
 #include "World.h"
 #include "IBonusOwner.h"
-#include "IDynamicObject.h"
+#include "IMovableObject.h"
 #include "IDestructible.h"
 
 std::vector<std::shared_ptr<IObject>> World::getAllObjects()
@@ -70,11 +70,11 @@ void World::initCollisionProcessors()
             {
                 auto object = collision.getObject();
                 object->state().setDestroyFlag( true );
-                auto bonus = std::dynamic_pointer_cast<IBonusOwner>( object );
+                auto flier = std::dynamic_pointer_cast<IBonusOwner>( object );
                 auto paddle = std::dynamic_pointer_cast<IBonusOwner>( thisObject );
-                auto bonusBonusType = bonus->bonusType();
-                if ( bonusBonusType )
-                    paddle->bonusType() = bonusBonusType;
+                auto flierBonusType = flier->bonusType();
+                if ( flierBonusType )
+                    paddle->bonusType() = flierBonusType;
 
                 if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::MultiBalls )
                 {
@@ -131,8 +131,8 @@ std::vector<std::shared_ptr<IObject>> World::generateNewBalls( size_t ballsNumbe
         for ( const auto& existingBall : m_balls )
         {
             auto createdBall = existingBall->clone();
-            auto createdBallDynamicObject = std::dynamic_pointer_cast<IDynamicObject>( createdBall );
-            auto randomAngle = glm::linearRand( 5, 355 );
+            auto createdBallDynamicObject = std::dynamic_pointer_cast<IMovableObject>( createdBall );
+            auto randomAngle = glm::linearRand<float>( 5, 355 );
             rotateDegInPlace( createdBallDynamicObject->velocity(), randomAngle );
             createdBalls.push_back( createdBall );
             if ( createdBalls.size() == ballsNumber )
@@ -271,7 +271,7 @@ void World::onEveryUpdate()
         size_t countRenewableBalls = 3;
         if ( m_balls.size() < countRenewableBalls )
         {
-            int ballsNumber = countRenewableBalls - m_balls.size();
+            auto ballsNumber = countRenewableBalls - m_balls.size();
             auto createdBalls = generateNewBalls( ballsNumber );
             m_balls.insert( m_balls.end(), createdBalls.begin(), createdBalls.end() );
         }

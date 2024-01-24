@@ -10,7 +10,7 @@ const float ballDiameter = getConfig<float, "game.objects.ball.diameter">();
 
 Ball::Ball()
 {
-    int angle = glm::linearRand( -70, -50 );
+    auto angle = glm::linearRand<float>( -70, -50 );
     angle = randomBool() ? angle : -angle;
     m_velocity = vectorFromDirectionAndLength( angle, ballInitialSpeed );
     DefaultObject::state().setSize( { ballDiameter, ballDiameter } );
@@ -93,6 +93,7 @@ void Ball::onBumping( std::vector<Collision>& collisions )
             changeDirection();
         }
 
+        // TODO: there is a bug. Replace restoreState() to calculation of new position without collision
         restoreState();
     }
     else

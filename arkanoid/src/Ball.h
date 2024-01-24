@@ -1,10 +1,10 @@
 #pragma once
 #include "DefaultObject.h"
-#include "IDynamicObject.h"
+#include "IMovableObject.h"
 #include "IBonusOwner.h"
 #include "IHaveParent.h"
 
-class Ball : public DefaultObject, public IDynamicObject, public IBonusOwner, public IHaveParent
+class Ball : public DefaultObject, public IMovableObject, public IBonusOwner, public IHaveParent
 {
     glm::vec2 m_velocity{};
     std::optional<Collision> m_biggestCollision;

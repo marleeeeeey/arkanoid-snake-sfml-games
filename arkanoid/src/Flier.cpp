@@ -1,13 +1,13 @@
-#include "Bonus.h"
+#include "Flier.h"
 
-Bonus::Bonus()
+Flier::Flier()
 {
     m_font = getDefaultFont();
     m_boundRectStandartSize = { 5, 5 };
     m_boundRectBonusSize = { 20, 20 };
 }
 
-void Bonus::calcState( [[maybe_unused]] std::optional<sf::Event> event, sf::Time elapsedTime )
+void Flier::calcState( [[maybe_unused]] std::optional<sf::Event> event, sf::Time elapsedTime )
 {
     sf::Vector2f speed = { 0, getConfig<float, "game.objects.bonus.speed">() * glm::linearRand( 1.0f, 2.0f ) };
 
@@ -24,7 +24,7 @@ void Bonus::calcState( [[maybe_unused]] std::optional<sf::Event> event, sf::Time
     }
 }
 
-void Bonus::draw( sf::RenderWindow& window )
+void Flier::draw( sf::RenderWindow& window )
 {
     auto shape = state().getCollisionRect();
     shape.setFillColor( getAlphaColor( sf::Color::Yellow, 0x80 ) );
@@ -45,17 +45,17 @@ void Bonus::draw( sf::RenderWindow& window )
     }
 }
 
-std::optional<BonusType>& Bonus::bonusType()
+std::optional<BonusType>& Flier::bonusType()
 {
     return m_bonusType;
 }
 
-std::shared_ptr<IObject> Bonus::clone()
+std::shared_ptr<IObject> Flier::clone()
 {
-    return std::make_shared<Bonus>( *this );
+    return std::make_shared<Flier>( *this );
 }
 
-std::string Bonus::name()
+std::string Flier::name()
 {
-    return "Bonus";
+    return "Flier";
 }
