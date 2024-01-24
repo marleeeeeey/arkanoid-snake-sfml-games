@@ -9,10 +9,7 @@ void Wall::draw( sf::RenderWindow& window )
 
 std::shared_ptr<IObject> Wall::clone()
 {
-    auto createdObjectPtr = std::make_shared<Wall>();
-    Wall& createdObject = *createdObjectPtr.get();
-    createdObject = *this;
-    return createdObjectPtr;
+    return std::make_shared<Wall>( *this );
 }
 
 std::string Wall::name()

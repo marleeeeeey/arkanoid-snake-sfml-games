@@ -156,10 +156,7 @@ void Ball::draw( sf::RenderWindow& window )
 
 std::shared_ptr<IObject> Ball::clone()
 {
-    auto createdObjectPtr = std::make_shared<Ball>();
-    Ball& createdObject = *createdObjectPtr.get();
-    createdObject = *this;
-    return createdObjectPtr;
+    return std::make_shared<Ball>( *this );
 }
 
 std::optional<BonusType>& Ball::bonusType()

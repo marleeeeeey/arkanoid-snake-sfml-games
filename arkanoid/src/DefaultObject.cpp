@@ -70,10 +70,7 @@ void DefaultObject::saveState()
 void DefaultObject::restoreState()
 {
     if ( m_savedState )
-    {
         m_state = m_savedState.value();
-        m_savedState = {};
-    }
 }
 
 bool DefaultObject::isVisible()

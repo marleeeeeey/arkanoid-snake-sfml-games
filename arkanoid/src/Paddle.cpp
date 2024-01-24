@@ -193,10 +193,7 @@ std::optional<BonusType>& Paddle::bonusType()
 
 std::shared_ptr<IObject> Paddle::clone()
 {
-    auto createdObjectPtr = std::make_shared<Paddle>();
-    Paddle& createdObject = *createdObjectPtr.get();
-    createdObject = *this;
-    return createdObjectPtr;
+    return std::make_shared<Paddle>( *this );
 }
 
 std::string Paddle::name()
