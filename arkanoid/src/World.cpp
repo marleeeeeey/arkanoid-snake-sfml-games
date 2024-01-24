@@ -81,11 +81,9 @@ void World::initCollisionProcessors()
                     int ballsNumber = glm::linearRand( 1, 3 );
                     auto createdBalls = generateNewBalls( ballsNumber );
                     m_balls.insert( m_balls.end(), createdBalls.begin(), createdBalls.end() );
-                    unsigned maxNumberOfBalls = 30;
+                    auto& maxNumberOfBalls = getConfig<size_t, "game.rules.maxNumberOfBalls">();
                     if ( m_balls.size() > maxNumberOfBalls )
-                    {
                         m_balls.resize( maxNumberOfBalls );
-                    }
                 }
 
                 if ( paddle->bonusType() && paddle->bonusType().value() == BonusType::DisableBonuses )

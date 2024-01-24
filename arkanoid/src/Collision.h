@@ -13,3 +13,5 @@ public:
     std::shared_ptr<IObject> getObject();
     sf::RectangleShape getCollisionRect() const;
 };
+
+std::optional<Collision> getBiggestCollision( const std::vector<Collision>& collisions );

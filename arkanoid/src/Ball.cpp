@@ -16,25 +16,6 @@ Ball::Ball()
     DefaultObject::state().setSize( { ballDiameter, ballDiameter } );
 }
 
-float getArea( const sf::Vector2f& size )
-{
-    return size.x * size.y;
-}
-
-Collision getBiggestCollision( std::vector<Collision>& collisions )
-{
-    std::ranges::sort(
-        collisions,
-        []( const Collision& lhs, const Collision& rhs )
-        {
-            auto areaLhs = getArea( lhs.getCollisionRect().getSize() );
-            auto areaRhs = getArea( rhs.getCollisionRect().getSize() );
-            return areaLhs < areaRhs;
-        } );
-
-    return collisions.back();
-}
-
 // TODO: move `fixCollisionAndChangeDirection` to utils
 // See explanation of evaluations in `arkanoid-uml.io`
 void Ball::fixCollisionAndChangeDirection( const Collision& collision )
@@ -87,7 +68,7 @@ void Ball::onBumping( std::vector<Collision>& collisions )
         return;
 
     // Calculate biggest collision
-    auto biggestCollistion = getBiggestCollision( collisions );
+    auto biggestCollistion = getBiggestCollision( collisions ).value();
     auto collisionObject = biggestCollistion.getObject();
 
     // Fix collision if needed
@@ -115,8 +96,8 @@ void Ball::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 
     float sec = elapsedTime.asSeconds();
 
-    float factor = 1.0001f;
-    m_velocity *= factor;
+    auto& acceleration_pxps = getConfig<float, "game.objects.ball.acceleration_pxps">();
+    m_velocity *= acceleration_pxps;
 
     if ( glm::length( m_velocity ) > ballMaxSpeed )
         m_velocity = glm::normalize( m_velocity ) * ballMaxSpeed;

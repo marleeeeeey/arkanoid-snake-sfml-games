@@ -2,13 +2,17 @@
   "window": {
     "width": 1000,
     "height": 800,
-    "frameRate": 120
+    "frameRate": 60
   },
   "game": {
+    "rules": {
+      "maxNumberOfBalls": 50
+    },
     "objects": {
       "ball": {
         "initialSpeed": 500,
-        "diameter": 15
+        "diameter": 15,
+        "acceleration_pxps": 1.001
       },
       "paddle": {
         "speed": 800,
@@ -17,7 +21,7 @@
         "angleSensitivity": 35
       },
       "bonus": {
-        "speed": 300
+        "speed": 400
       }
     }
   }
