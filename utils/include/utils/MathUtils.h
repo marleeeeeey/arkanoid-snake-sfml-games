@@ -10,3 +10,10 @@ inline bool randomBool()
 {
     return glm::linearRand( 0, 1 ) == 1;
 }
+
+// Returns 1 if val > 0, -1 if val < 0, and 0 if val == 0.
+template <typename T>
+T sign( T val )
+{
+    return ( T( 0 ) < val ) - ( val < T( 0 ) );
+}

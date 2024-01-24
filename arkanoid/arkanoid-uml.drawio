@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-01-24T17:38:05.293Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.1.2 Chrome/106.0.5249.199 Electron/21.4.3 Safari/537.36" etag="CX6oAP7B4HW9yMFe24mq" version="21.1.2" type="device">
+<mxfile host="Electron" modified="2024-01-24T22:42:17.271Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.1.2 Chrome/106.0.5249.199 Electron/21.4.3 Safari/537.36" etag="JJ7RJ3KGPyB9Ow0YHYnL" version="21.1.2" type="device" pages="2">
   <diagram name="Arkanoid" id="13e1069c-82ec-6db2-03f1-153e76fe0fe0">
     <mxGraphModel dx="1360" dy="1509" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" background="#ffffff" math="0" shadow="0">
       <root>
@@ -648,6 +648,63 @@
         <mxCell id="uUxDuzY7TnwZxYYP5Ev3-14" value="&lt;span style=&quot;white-space: nowrap&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="shape=note;html=1;size=14;verticalAlign=top;align=left;spacingTop=-6;labelBackgroundColor=none;fillColor=#a20025;whiteSpace=wrap;collapsible=1;strokeColor=#6F0000;fontColor=#ffffff;" parent="1" vertex="1" collapsed="1">
           <mxGeometry x="805" y="1478" width="50" height="26" as="geometry">
             <mxRectangle x="860" y="1580" width="200" height="55" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="lB5EpfpuL19oF0w5Pw_f" name="Collision Evaluations">
+    <mxGraphModel dx="952" dy="1056" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-1" value="" style="endArrow=classic;html=1;rounded=0;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="460" as="sourcePoint" />
+            <mxPoint x="400" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-2" value="shortest" style="endArrow=classic;html=1;rounded=0;labelBackgroundColor=default;strokeColor=#82b366;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=#d5e8d4;shape=flexArrow;" edge="1" parent="1">
+          <mxGeometry x="0.3846" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="460" as="sourcePoint" />
+            <mxPoint x="270" y="460" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-3" value="ball velocity" style="endArrow=classic;html=1;rounded=0;labelBackgroundColor=default;strokeColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;endFill=1;strokeWidth=2;endSize=10;" edge="1" parent="1">
+          <mxGeometry x="0.7633" y="29" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="168" y="315" as="sourcePoint" />
+            <mxPoint x="460" y="495" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-4" value="COLLISION" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;fillStyle=zigzag-line;fillColor=#F2D4FC;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="270" y="220" width="130" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-5" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;labelBackgroundColor=default;strokeColor=#b85450;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=#f8cecc;opacity=50;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="402" y="460" as="sourcePoint" />
+            <mxPoint x="266" y="375" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-6" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;labelBackgroundColor=default;strokeColor=#b85450;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=#f8cecc;opacity=50;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="375" as="sourcePoint" />
+            <mxPoint x="141" y="451" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YiTZBL62ZL6k3tCcQOsb-8" value="shortest" style="endArrow=classic;html=1;rounded=0;labelBackgroundColor=default;strokeColor=#82b366;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=#d5e8d4;shape=flexArrow;" edge="1" parent="1">
+          <mxGeometry x="0.3846" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="460" as="sourcePoint" />
+            <mxPoint x="140" y="460" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t6h_w8QE-z57wDCk8aDa-3" value="minus twice shortest projections" style="endArrow=classic;startArrow=none;html=1;rounded=0;labelBackgroundColor=default;strokeColor=#d6b656;fontFamily=Helvetica;fontSize=11;fontColor=default;shape=connector;strokeWidth=3;fillColor=#fff2cc;startFill=0;" edge="1" parent="1">
+          <mxGeometry y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="520" as="sourcePoint" />
+            <mxPoint x="140" y="520" as="targetPoint" />
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
       </root>

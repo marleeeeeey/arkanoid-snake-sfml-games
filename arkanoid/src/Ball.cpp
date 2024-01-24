@@ -35,80 +35,76 @@ Collision getBiggestCollision( std::vector<Collision>& collisions )
     return collisions.back();
 }
 
-void Ball::changeDirection()
+// TODO: move `fixCollisionAndChangeDirection` to utils
+// See explanation of evaluations in `arkanoid-uml.io`
+void Ball::fixCollisionAndChangeDirection( const Collision& collision )
 {
-    auto collisionSize = m_biggestCollision.value().getCollisionRect().getSize();
+    auto collisionSize = collision.getCollisionRect().getSize();
+    auto pos = state().getPos();
 
     if ( isEqual( collisionSize.x, collisionSize.y ) )
     {
         m_velocity.x *= -1;
         m_velocity.y *= -1;
+        pos.y += sign( m_velocity.y ) * collisionSize.y * 2;
+        pos.x += sign( m_velocity.x ) * collisionSize.x * 2;
     }
     else if ( collisionSize.x > collisionSize.y )
     {
         m_velocity.y *= -1;
+        pos.y += sign( m_velocity.y ) * collisionSize.y * 2;
     }
     else
     {
         m_velocity.x *= -1;
+        pos.x += sign( m_velocity.x ) * collisionSize.x * 2;
     }
+
+    state().setPos( pos );
 }
 
-void Ball::stealLiveFromOneDestructibleObject( const std::vector<Collision>& collisions ) const
+bool Ball::shouldFixCollition( const std::shared_ptr<IObject>& collisionObject ) const
 {
-    std::vector<std::shared_ptr<IDestructible>> desctructibleObjects;
-    for ( auto collision : collisions )
+    if ( m_bonusType && m_bonusType.value() == BonusType::FireBall )
     {
-        if ( auto desctructible = std::dynamic_pointer_cast<IDestructible>( collision.getObject() ) )
+        auto desctuctibleObject = std::dynamic_pointer_cast<IDestructible>( collisionObject );
+        if ( !desctuctibleObject || !desctuctibleObject->lives() )
         {
-            desctructibleObjects.push_back( desctructible );
+            return true;
         }
     }
-
-    if ( !desctructibleObjects.empty() )
+    else
     {
-        if ( auto& frontObjectLives = desctructibleObjects.front()->lives() )
-            frontObjectLives.value()--;
+        return true;
     }
+
+    return false;
 }
 
 void Ball::onBumping( std::vector<Collision>& collisions )
 {
-    if ( !collisions.empty() )
-    {
-        m_biggestCollision = getBiggestCollision( collisions );
+    if ( collisions.empty() )
+        return;
 
-        if ( m_bonusType && m_bonusType.value() == BonusType::FireBall )
-        {
-            auto collision = m_biggestCollision.value();
-            auto collisionObject = collision.getObject();
-            auto desctuctibleObject = std::dynamic_pointer_cast<IDestructible>( collisionObject );
-            // TODO: doesn't clear why do we use `|| !desctuctibleObject->lives()`
-            if ( !desctuctibleObject || !desctuctibleObject->lives() )
-            {
-                changeDirection();
-            }
-        }
-        else
-        {
-            changeDirection();
-        }
+    // Calculate biggest collision
+    auto biggestCollistion = getBiggestCollision( collisions );
+    auto collisionObject = biggestCollistion.getObject();
 
-        // TODO: there is a bug. Replace restoreState() to calculation of new position without collision
-        restoreState();
-    }
-    else
-    {
-        saveState();
-    }
+    // Fix collision if needed
+    if ( shouldFixCollition( collisionObject ) )
+        fixCollisionAndChangeDirection( biggestCollistion );
 
-    stealLiveFromOneDestructibleObject( collisions );
+    // Decrease lives if needed
+    auto destructibleCollisionObject = std::dynamic_pointer_cast<IDestructible>( collisionObject );
+    if ( destructibleCollisionObject && destructibleCollisionObject->lives() )
+        destructibleCollisionObject->lives().value()--;
 
+    // Call responce collision
     for ( auto collision : collisions )
     {
-        std::vector<Collision> oneBackCollision;
-        oneBackCollision.emplace_back( shared_from_this(), collision.getCollisionRect() );
-        collision.getObject()->onBumping( oneBackCollision );
+        std::vector<Collision> backwardCollitions;
+        backwardCollitions.emplace_back( shared_from_this(), collision.getCollisionRect() );
+        collision.getObject()->onBumping( backwardCollitions );
     }
 }
 
