@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include "IObject.h"
 
 class CollisionBucket

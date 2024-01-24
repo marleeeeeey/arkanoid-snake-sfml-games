@@ -35,9 +35,6 @@ World::World(
     m_font = getDefaultFont();
     m_isGameOver = true;
     m_scopes = 0;
-    m_pauseMenu = objectFactory->createObject( ObjectType::PauseMenu );
-    m_pauseMenu->state().setSize( windowSize );
-    m_pauseMenu->state().setPos( { windowSize.x / 2, windowSize.y / 2 } );
 }
 
 void World::initCollisionProcessors()
@@ -186,7 +183,7 @@ void World::initBalls()
     m_balls.push_back( ball );
 }
 
-void World::generate()
+void World::generateNewWorld()
 {
     m_isGameOver = false;
     removeAllObjects();
@@ -257,7 +254,7 @@ void World::updateGameOverStatus()
     }
 }
 
-void World::onEveryUpdate()
+void World::gameLogicCreateRenewableBallsIfNeeded()
 {
     if ( m_plates.empty() )
         return;
@@ -278,60 +275,49 @@ void World::onEveryUpdate()
 
 void World::updateState( std::optional<sf::Event> event, sf::Time elapsedTime )
 {
-    m_elapsedTime_ms = elapsedTime.asMilliseconds();
-
-    m_pauseMenu->calcState( event, elapsedTime );
-
-    if ( m_pauseMenu->isVisible() )
-    {
-        return;
-    }
-
+    // 1. Check game over status
     if ( m_isGameOver )
-    {
-        generate();
-    }
+        generateNewWorld();
 
-    onEveryUpdate();
+    // 2. Apply specific game logic
+    gameLogicCreateRenewableBallsIfNeeded();
 
+    // 3. Apply collision processors
     for ( auto& collisionProcessor : m_collisionBuckets )
-    {
         collisionProcessor.process();
-    }
     removeAllDestroyedObjects();
 
+    // 4. Update objects states by elapsed time and events
     for ( const auto& object : getAllObjects() )
     {
         object->calcState( event, elapsedTime );
         if ( isObjectOutOfBorder( object ) )
-        {
             object->state().setDestroyFlag( true );
-        }
     }
+
+    // 5. Remove destroyed objects
     removeAllDestroyedObjects();
 
+    // 6. Update game over status
     updateGameOverStatus();
+}
+
+void World::drawInfoArea( sf::RenderWindow& window )
+{
+    sf::Text text;
+    text.setFont( m_font );
+    text.setScale( 0.7f, 0.7f );
+
+    std::string info = fmt::format( "Scopes: {} Ball count: {}", m_scopes, m_balls.size() );
+
+    text.setString( info );
+    window.draw( text );
 }
 
 void World::draw( sf::RenderWindow& window )
 {
     for ( const auto& object : getAllObjects() )
-    {
         object->draw( window );
-    }
 
-    sf::Text text;
-    text.setFont( m_font );
-    text.setScale( 0.7f, 0.7f );
-
-    auto fps = m_elapsedTime_ms ? 1000 / m_elapsedTime_ms : 0;
-    std::string info = fmt::format( "Scopes: {} Ball count: {} FPS: {}", m_scopes, m_balls.size(), fps );
-
-    text.setString( info );
-    window.draw( text );
-
-    if ( m_pauseMenu->isVisible() )
-    {
-        m_pauseMenu->draw( window );
-    }
+    drawInfoArea( window );
 }

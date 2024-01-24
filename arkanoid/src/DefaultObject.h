@@ -1,6 +1,5 @@
 #pragma once
 #include "IObject.h"
-#include <set>
 
 class DefaultObject : public IObject
 {

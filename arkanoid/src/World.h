@@ -18,23 +18,22 @@ class World : public IWorld
     sf::Font m_font;
     unsigned m_scopes;
     bool m_isGameOver;
-    int m_elapsedTime_ms{};
-    std::shared_ptr<IObject> m_pauseMenu;
 
     std::vector<std::shared_ptr<IObject>> getAllObjects();
     bool isObjectOutOfBorder( const std::shared_ptr<IObject>& object ) const;
     static void removeObjectsIfDestroyed( std::vector<std::shared_ptr<IObject>>& objects );
     void removeAllDestroyedObjects();
     void removeAllObjects();
-    void generate();
+    void generateNewWorld();
     void updateGameOverStatus();
-    void onEveryUpdate();
+    void gameLogicCreateRenewableBallsIfNeeded();
     void initPlates();
     void initWalls();
     void initBricks();
     void initBalls();
     void initCollisionProcessors();
     std::vector<std::shared_ptr<IObject>> generateNewBalls( size_t ballsNumber ) const;
+    void drawInfoArea( sf::RenderWindow& window );
 public:
     World(
         const std::shared_ptr<IObjectFactory>& objectFactory, std::shared_ptr<ILevelGenerator> levelGenerator,

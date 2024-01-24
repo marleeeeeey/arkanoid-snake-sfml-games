@@ -7,8 +7,7 @@ enum class ObjectType
     Plate,
     Ball,
     Bonus,
-    Wall,
-    PauseMenu
+    Wall
 };
 
 class IObjectFactory : public std::enable_shared_from_this<IObjectFactory>
