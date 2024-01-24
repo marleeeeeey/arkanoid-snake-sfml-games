@@ -83,6 +83,7 @@ void Ball::onBumping( std::vector<Collision>& collisions )
             auto collision = m_biggestCollision.value();
             auto collisionObject = collision.getObject();
             auto desctuctibleObject = std::dynamic_pointer_cast<IDestructible>( collisionObject );
+            // TODO: doesn't clear why do we use `|| !desctuctibleObject->lives()`
             if ( !desctuctibleObject || !desctuctibleObject->lives() )
             {
                 changeDirection();
