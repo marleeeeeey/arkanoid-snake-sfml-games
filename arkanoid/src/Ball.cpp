@@ -67,20 +67,20 @@ void Ball::onBumping( std::vector<Collision>& collisions )
     if ( collisions.empty() )
         return;
 
-    // Calculate biggest collision
+    // 1. Calculate biggest collision
     auto biggestCollistion = getBiggestCollision( collisions ).value();
     auto collisionObject = biggestCollistion.getObject();
 
-    // Fix collision if needed
+    // 2. Fix collision if needed
     if ( shouldFixCollition( collisionObject ) )
         fixCollisionAndChangeDirection( biggestCollistion );
 
-    // Decrease lives if needed
+    // 3. Decrease lives if needed
     auto destructibleCollisionObject = std::dynamic_pointer_cast<IDestructible>( collisionObject );
     if ( destructibleCollisionObject && destructibleCollisionObject->lives() )
         destructibleCollisionObject->lives().value()--;
 
-    // Call responce collision
+    // 4. Call responce collision
     for ( auto collision : collisions )
     {
         std::vector<Collision> backwardCollitions;

@@ -10,6 +10,7 @@
  *  - Temporary notification should be shown for 3 seconds in the center of the screen.
  * TODO: Create integration test to check if bonus objects are created correctly in runtime.
  * TODO: If ball do not touch paddle or bricks for 5 seconds, then M-bonus should be applied.
+ * TODO: Add menu to select levels.
  */
 
 int main()

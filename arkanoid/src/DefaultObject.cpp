@@ -20,26 +20,6 @@ bool haveCollision( const std::shared_ptr<IObject>& object, const ObjectCollecti
         secondaryObjects, [&]( const auto& secondaryObject ) { return haveCollision( object, secondaryObject ); } );
 }
 
-template <typename ObjectCollection>
-std::vector<Collision> getCollisions( const std::shared_ptr<IObject>& object, const ObjectCollection& secondaryObjects )
-{
-    std::vector<Collision> collisions;
-    for ( const auto& secondaryObject : secondaryObjects )
-    {
-        // Skip self.
-        if ( object == secondaryObject )
-            continue;
-
-        // Add collision if exists.
-        if ( auto collision = calcIntersectRectShape(
-                 object->state().getCollisionRect(), secondaryObject->state().getCollisionRect() ) )
-        {
-            collisions.emplace_back( secondaryObject, collision.value() );
-        }
-    }
-
-    return collisions;
-}
 } // namespace
 
 void DefaultObject::onBumping( std::vector<Collision>& collisions )

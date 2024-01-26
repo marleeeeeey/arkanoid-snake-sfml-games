@@ -2,14 +2,15 @@
 #include "IStaticObject.h"
 #include "IMovableObject.h"
 #include "IHaveParent.h"
+#include "Collision.h"
 
 Paddle::Paddle()
 {
-    m_offset = 0;
+    m_velocityDamping = 0;
     m_paddleState = PaddleState::Stop;
 }
 
-void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTime )
+void Paddle::updateVelocityDamping( std::optional<sf::Event> event, sf::Time elapsedTime )
 {
     if ( event && event.value().type == sf::Event::EventType::KeyPressed &&
          event.value().key.code == sf::Keyboard::Key::Left && m_paddleState != PaddleState::MoveLeft )
@@ -50,18 +51,15 @@ void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTi
     switch ( m_paddleState )
     {
     case PaddleState::Stop:
-        if ( m_offset > 0 )
-            m_offset -= absDampingOffset;
-        else if ( m_offset < 0 )
-            m_offset += absDampingOffset;
-        if ( m_offset != 0.0f && abs( m_offset ) < absDampingOffset )
-            m_offset = 0;
+        m_velocityDamping += -sign( m_velocityDamping ) * absDampingOffset;
+        if ( abs( m_velocityDamping ) < absDampingOffset )
+            m_velocityDamping = 0;
         break;
     case PaddleState::MoveLeft:
-        m_offset = -absOffset;
+        m_velocityDamping = -absOffset;
         break;
     case PaddleState::MoveRight:
-        m_offset = absOffset;
+        m_velocityDamping = absOffset;
         break;
     case PaddleState::Attack:
         // TODO implement attack for paddle
@@ -71,15 +69,24 @@ void Paddle::calculateOffset( std::optional<sf::Event> event, sf::Time elapsedTi
 
 void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
 {
-    sf::Vector2f pos01 = state().getPos();
-    calculateOffset( event, elapsedTime );
+    // 1. Save initial position
+    const sf::Vector2f initialPos = state().getPos();
+
+    // 2. Update velocity damping - uses to smooth stopping
+    updateVelocityDamping( event, elapsedTime );
+
+    // 3. Update position by velocity damping
     auto pos = state().getPos();
-    pos.x += m_offset;
+    pos.x += m_velocityDamping;
     state().setPos( pos );
-    if ( haveCollisions( m_collisionWalls ) )
+
+    // 4. Check and solve collisions
+    auto collisions = getCollisions( shared_from_this(), m_collisionWalls );
+    auto biggestCollisionOpt = getBiggestCollision( collisions );
+    if ( biggestCollisionOpt )
     {
-        m_offset = 0;
-        // TODO: there is a bug. Replace restoreState() to calculation of new position without collision
+        m_velocityDamping = 0;
+        auto biggestCollision = biggestCollisionOpt.value();
         restoreState();
     }
     else
@@ -87,10 +94,10 @@ void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
         saveState();
         m_collisionWalls.clear();
     }
+    auto posAfterCollisionFixed = state().getPos();
 
-    sf::Vector2f pos02 = state().getPos();
-    sf::Vector2f shift = pos02 - pos01;
-
+    // 5. Update size if bonus is active
+    // TODO: fix collision with wall when paddle is long
     auto size = state().getSize();
     if ( m_bonusType && m_bonusType.value() == BonusType::LongPlate )
     {
@@ -108,10 +115,12 @@ void Paddle::calcState( std::optional<sf::Event> event, sf::Time elapsedTime )
             state().setSize( m_originalSize.value() );
     }
 
+    // 6. Update position of magnetized balls with delta position of paddle
+    sf::Vector2f deltaPosition = posAfterCollisionFixed - initialPos;
     for ( const auto& ball : m_magnetBalls )
     {
         auto ballPos = ball->state().getPos();
-        ballPos += shift;
+        ballPos += deltaPosition;
         ball->state().setPos( ballPos );
     }
 }
