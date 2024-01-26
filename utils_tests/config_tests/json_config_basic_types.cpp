@@ -3,7 +3,7 @@
 
 TEST( StringLiteral, Basics )
 {
-    auto stringView = toStringView<"literal string">();
+    auto stringView = details_::toStringView<"literal string">();
     ASSERT_EQ( stringView, "literal string" );
 }
 

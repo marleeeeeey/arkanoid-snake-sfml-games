@@ -17,7 +17,7 @@
       "paddle": {
         "speed": 800,
         "damping": 0.06,
-        "longSizeFactor": 1.5,
+        "longSizeFactor": 1.0,
         "angleSensitivity": 35
       },
       "bonus": {
