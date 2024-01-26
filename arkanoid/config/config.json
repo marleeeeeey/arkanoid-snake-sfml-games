@@ -2,7 +2,7 @@
   "window": {
     "width": 1000,
     "height": 800,
-    "frameRate": 60
+    "frameRate": 120
   },
   "game": {
     "rules": {
@@ -17,6 +17,7 @@
       "paddle": {
         "speed": 800,
         "damping": 0.06,
+        // TODO: fix paddle-wall collistion issue and increase paddle size factor
         "longSizeFactor": 1.0,
         "angleSensitivity": 35
       },

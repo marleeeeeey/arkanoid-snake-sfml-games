@@ -14,16 +14,29 @@ const json& JsonLoader::root() const
 
 bool JsonLoader::loadFromFile( std::string_view filename )
 {
+    std::ifstream inputFile( filename.data() );
+    if ( !inputFile.is_open() )
+    {
+        MY_LOG_FMT( warn, "Error opening file for reading: {}", filename );
+        return false;
+    }
+
     try
     {
-        std::ifstream inputFile( filename.data() );
-        if ( !inputFile.is_open() )
+        std::stringstream buffer;
+        std::string line;
+        while ( std::getline( inputFile, line ) )
         {
-            MY_LOG_FMT( warn, "Error opening file for reading: {}", filename );
-            return false;
+            // Remove one-line comments
+            std::size_t commentPos = line.find( "//" );
+            if ( commentPos != std::string::npos )
+            {
+                line.erase( commentPos );
+            }
+            buffer << line << "\n";
         }
 
-        inputFile >> root_;
+        root_ = nlohmann::json::parse( buffer );
     }
     catch ( const std::exception& e )
     {
