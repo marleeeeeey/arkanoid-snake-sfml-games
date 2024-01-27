@@ -72,7 +72,7 @@ function(add_gtest TGT)
 endfunction()
 
 function(add_game TGT)
-    set(GAME_TARGET ${TGT}_game)
+    set(GAME_TARGET ${TGT})
     set(GAME_PCH ${PCH})
 
     add_executable(${GAME_TARGET} ${GAME_SRCS})
@@ -88,5 +88,6 @@ add_subdirectory(utils)
 add_subdirectory(arkanoid)
 add_subdirectory(libraries_tests)
 add_subdirectory(utils_tests)
+add_subdirectory(game_template)
 
 install()

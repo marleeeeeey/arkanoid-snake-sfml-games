@@ -26,3 +26,14 @@ std::filesystem::path getFullPath( const std::string& relativePath )
     }
     return fullPath;
 }
+
+std::string getExecutableName( const char* path )
+{
+    std::string fullPath( path );
+
+    std::size_t lastSlashPos = fullPath.find_last_of( "/\\" );
+    if ( lastSlashPos != std::string::npos )
+        return fullPath.substr( lastSlashPos + 1 );
+
+    return fullPath;
+}
