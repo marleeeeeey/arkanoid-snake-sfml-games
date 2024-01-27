@@ -73,6 +73,9 @@ void Snake::grow()
 
 void Snake::changeDirection( Direction newDirection )
 {
+    if ( isOppositeDirection( direction_, newDirection ) )
+        return;
+
     direction_ = newDirection;
 }
 
@@ -108,5 +111,20 @@ bool Snake::collidesWithScreenArea() const
         return true;
     }
 
+    return false;
+}
+
+bool Snake::collidesWithSelf() const
+{
+    // Snake can't collide with itself if it's too short
+    if ( body_.size() < 4 )
+        return false;
+
+    const sf::RectangleShape& head = body_.front();
+    for ( size_t i = 4; i < body_.size(); ++i )
+    {
+        if ( head.getGlobalBounds().intersects( body_[i].getGlobalBounds() ) )
+            return true;
+    }
     return false;
 }

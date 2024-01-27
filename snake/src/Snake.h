@@ -12,6 +12,7 @@ public:
     void draw( sf::RenderWindow& window ) const;
     [[nodiscard]] bool collidesWith( const Food& food ) const;
     [[nodiscard]] bool collidesWithScreenArea() const;
+    [[nodiscard]] bool collidesWithSelf() const;
 private:
     sf::Vector2u windowSize_;
     std::vector<sf::RectangleShape> body_;

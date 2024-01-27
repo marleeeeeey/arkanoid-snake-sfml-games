@@ -18,7 +18,7 @@ void Game::update( const sf::Time& deltaTime )
     if ( !gameOver_ )
     {
         snake_.update( deltaTime );
-        if ( snake_.collidesWithScreenArea() )
+        if ( snake_.collidesWithScreenArea() || snake_.collidesWithSelf() )
         {
             gameOver_ = true;
             return;
