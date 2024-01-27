@@ -2,6 +2,25 @@
   "window": {
     "width": 1000,
     "height": 800,
-    "frameRate": 120
+    "frameRate": 50
+  },
+  "game": {
+    "view": {
+      "cell_size_px": 20,
+      "background_color": "Grey",
+      "font_color": "White",
+      "font_size_px": 24
+    },
+    "objects": {
+      "snake": {
+        "speed_pxps": 500,
+        "initial_num_segments": 3,
+        "segment_spacing_px": 2,
+        "color": "Green"
+      },
+      "food": {
+        "color": "Red"
+      }
+    }
   }
 }

@@ -1,27 +1,60 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game( const sf::Vector2u& windowSize )
 {
-    // TODO: Paste your code here
+    windowSize_ = windowSize;
 }
 
 void Game::setup()
 {
-    // TODO: Paste your code here
+    snake_.setup( windowSize_ );
+    gameBoard_.setup( windowSize_ );
+    food_.respawn( windowSize_ );
+    scoreBoard_.reset();
+    gameOver_ = false;
 }
 
 void Game::update( const sf::Time& deltaTime )
 {
-    // TODO: Paste your code here
+    if ( !gameOver_ )
+    {
+        snake_.update( deltaTime );
+        if ( snake_.collidesWithScreenArea() )
+        {
+            gameOver_ = true;
+            return;
+        }
+
+        if ( snake_.collidesWith( food_ ) )
+        {
+            snake_.grow();
+            food_.respawn( windowSize_ );
+            scoreBoard_.updateScore( 1 );
+        }
+    }
 }
 
-void Game::render( sf::RenderWindow& window )
+void Game::render( sf::RenderWindow& window ) const
 {
-    // TODO: Paste your code here
+    gameBoard_.draw( window );
+    snake_.draw( window );
+    food_.draw( window );
+    scoreBoard_.draw( window );
 }
 
 bool Game::isGameOver() const
 {
-    // TODO: Paste your code here
-    return false;
+    return gameOver_;
+}
+
+void Game::handleInput( const sf::Event& event )
+{
+    static const std::map<sf::Keyboard::Key, Direction> keyboardToDirectionMap = {
+        { sf::Keyboard::Key::Up, Direction::Up },
+        { sf::Keyboard::Key::Down, Direction::Down },
+        { sf::Keyboard::Key::Left, Direction::Left },
+        { sf::Keyboard::Key::Right, Direction::Right } };
+
+    if ( event.type == sf::Event::KeyPressed && keyboardToDirectionMap.contains( event.key.code ) )
+        snake_.changeDirection( keyboardToDirectionMap.at( event.key.code ) );
 }
