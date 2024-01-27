@@ -36,6 +36,7 @@ using json = nlohmann::json;
 // ************* My Utils *************
 #include <utils/GlmToSfmlOperators.h>
 #include <utils/Config.h>
+#include <utils/Direction.h>
 #include <utils/JsonFormatter.h>
 #include <utils/JsonLoader.h>
 #include <utils/GeometryUtils.h>

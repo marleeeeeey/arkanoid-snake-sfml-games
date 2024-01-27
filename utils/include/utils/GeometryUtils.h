@@ -30,3 +30,5 @@ bool isIntersect( const sf::Shape& shape1, const sf::Shape& shape2 );
 void rotateDegInPlace( glm::vec2& vec, float angleDegrees );
 void setAngle( glm::vec2& vec, float angleDegrees );
 glm::vec2 vectorFromDirectionAndLength( float angleDegrees, float length );
+
+sf::Vector2f getNormalizedVectorByDirectionEnum( Direction direction );

@@ -5,15 +5,18 @@ bool isKeyPressed( sf::Event event, sf::Keyboard::Key key )
     return event.type == sf::Event::EventType::KeyPressed && event.key.code == key;
 }
 
-sf::Font getDefaultFont()
+// Load font from file and throw exception if it fails
+sf::Font loadFontFromFile( std::string fontFileName )
 {
     sf::Font font;
-    std::string fontFileName = R"(C:\Windows\Fonts\calibri.ttf)";
     if ( !font.loadFromFile( fontFileName ) )
-    {
         throw std::runtime_error( MY_FMT( "Can't open font file '{}'", fontFileName ) );
-    }
+    return font;
+}
 
+const sf::Font& getDefaultFont()
+{
+    static sf::Font font = loadFontFromFile( R"(C:\Windows\Fonts\calibri.ttf)" );
     return font;
 }
 

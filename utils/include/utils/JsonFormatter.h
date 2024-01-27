@@ -53,6 +53,36 @@ struct adl_serializer
         data.y = j.at( "y" ).get<T>();
     }
 
+    static auto& getPredefindColorMap()
+    {
+        static const std::unordered_map<std::string_view, sf::Color> stringToSfColorMatch = {
+            { "Red", sf::Color::Red },
+            { "Green", sf::Color::Green },
+            { "Blue", sf::Color::Blue },
+            { "Yellow", sf::Color::Yellow },
+            { "Magenta", sf::Color::Magenta },
+            { "Cyan", sf::Color::Cyan },
+            { "Transparent", sf::Color::Transparent },
+            { "White", sf::Color::White },
+            { "Black", sf::Color::Black },
+            { "Grey", sf::Color( 50, 50, 50 ) },
+        };
+
+        return stringToSfColorMatch;
+    }
+
+    static void to_json( json& j, const sf::Color& data )
+    {
+        j = std::ranges::find_if(
+                getPredefindColorMap(), [color = data]( const auto& pair ) { return pair.second == color; } )
+                ->first;
+    }
+
+    static void from_json( const json& j, sf::Color& data )
+    {
+        data = getPredefindColorMap().at( j.get<std::string>() );
+    }
+
     // ***************************************************************
     // ***************************************************************
     // ***************************************************************

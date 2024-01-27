@@ -122,6 +122,23 @@ glm::vec2 vectorFromDirectionAndLength( float angleDegrees, float length )
     return result;
 }
 
+sf::Vector2f getNormalizedVectorByDirectionEnum( Direction direction )
+{
+    switch ( direction )
+    {
+    case Direction::Up:
+        return { 0, -1 };
+    case Direction::Down:
+        return { 0, 1 };
+    case Direction::Left:
+        return { -1, 0 };
+    case Direction::Right:
+        return { 1, 0 };
+    }
+
+    throw std::runtime_error( "Unknown direction enum value" );
+}
+
 void updateTextCenter( sf::Text& text, sf::Vector2f centerPos )
 {
     text.setPosition( centerPos );

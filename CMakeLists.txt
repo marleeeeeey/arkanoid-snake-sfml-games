@@ -88,7 +88,7 @@ add_subdirectory(utils)
 add_subdirectory(arkanoid)
 add_subdirectory(libraries_tests)
 add_subdirectory(utils_tests)
-add_subdirectory(game_template)
+# add_subdirectory(game_template)
 add_subdirectory(snake)
 
 install()

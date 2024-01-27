@@ -23,3 +23,19 @@ T getArea( const sf::Vector2<T>& size )
 {
     return size.x * size.y;
 }
+
+template <typename T>
+sf::Vector2<T> normalize( const sf::Vector2<T>& v )
+{
+    float length = std::sqrt( v.x * v.x + v.y * v.y );
+    if ( length != 0 )
+        return sf::Vector2<T>( v.x / length, v.y / length );
+    return v;
+}
+
+// value = 85, step = 10 => 80
+template <typename T>
+T roundStep( T value, T step )
+{
+    return step * glm::round( value / step );
+}
