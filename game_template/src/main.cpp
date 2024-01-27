@@ -1,3 +1,6 @@
+#include "Game.h"
+#include "InputHandler.h"
+
 int main( int argc, char** argv )
 {
     std::filesystem::path currentDir = std::filesystem::current_path();
@@ -13,38 +16,50 @@ int main( int argc, char** argv )
     sf::RenderWindow window(
         videoMode, MY_FMT( "{} ({}x{}x{})", execFileName, windowWidth, windowHeight, windowFrameRate ) );
     window.setFramerateLimit( windowFrameRate );
-
     std::ignore = ImGui::SFML::Init( window );
-    sf::Clock deltaClock;
-    auto lastTime = deltaClock.getElapsedTime();
+
+    // 2. Create clock
+    sf::Clock clock;
+    auto lastTime = clock.getElapsedTime();
+
+    // 3. Create game base classes
+    Game game;
+    InputHandler inputHandler;
+    bool isGameRunning = true;
+    game.setup();
 
     while ( window.isOpen() )
     {
-        std::optional<sf::Event> optEvent;
-        sf::Event curEvent{};
-
-        while ( window.pollEvent( curEvent ) )
+        // 4. Handle events
+        sf::Event event{};
+        while ( window.pollEvent( event ) && isGameRunning )
         {
-            ImGui::SFML::ProcessEvent( curEvent );
-            if ( curEvent.type == sf::Event::Closed || isKeyPressed( curEvent, sf::Keyboard::Escape ) )
-            {
+            ImGui::SFML::ProcessEvent( event );
+            if ( event.type == sf::Event::Closed )
                 window.close();
-            }
-            optEvent = curEvent;
+
+            inputHandler.handleInput( event, game );
         }
 
-        auto currentTime = deltaClock.getElapsedTime();
+        // 5. Calculate delta time
+        auto currentTime = clock.getElapsedTime();
         auto deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
+        // 6. Update game
+        game.update( deltaTime );
+        if ( game.isGameOver() )
+            isGameRunning = false;
+
+        // 7. Render game
         ImGui::SFML::Update( window, deltaTime );
-
         window.clear();
-
+        game.render( window );
         ImGui::SFML::Render( window );
         window.display(); // Frame rate is limited by windowFrameRate
     }
 
+    // 8. Shutdown
     ImGui::SFML::Shutdown();
     MY_LOG_FMT( info, "`{}` game finished", execFileName );
     return 0;
