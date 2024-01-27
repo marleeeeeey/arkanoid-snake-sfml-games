@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "InputHandler.h"
 
 int main( int argc, char** argv )
 {
@@ -8,11 +7,11 @@ int main( int argc, char** argv )
     MY_LOG_FMT( info, "Starting game `{}` from {}", execFileName, currentDir.string() );
 
     // 1. Configurate window
-    const auto& windowWidth = getConfig<float, "window.width", 600>();
-    const auto& windowHeight = getConfig<float, "window.height", 800>();
-    const auto& windowFrameRate = getConfig<int, "window.frameRate", 120>();
-    sf::Vector2f windowSize = { windowWidth, windowHeight };
-    auto videoMode = sf::VideoMode( static_cast<unsigned>( windowSize.x ), static_cast<unsigned>( windowSize.y ) );
+    const auto& windowWidth = getConfig<unsigned, "window.width", 600>();
+    const auto& windowHeight = getConfig<unsigned, "window.height", 800>();
+    const auto& windowFrameRate = getConfig<unsigned, "window.frameRate", 120>();
+    sf::Vector2u windowSize = { windowWidth, windowHeight };
+    auto videoMode = sf::VideoMode( windowSize.x, windowSize.y );
     sf::RenderWindow window(
         videoMode, MY_FMT( "{} ({}x{}x{})", execFileName, windowWidth, windowHeight, windowFrameRate ) );
     window.setFramerateLimit( windowFrameRate );
@@ -23,8 +22,7 @@ int main( int argc, char** argv )
     auto lastTime = clock.getElapsedTime();
 
     // 3. Create game base classes
-    Game game;
-    InputHandler inputHandler;
+    Game game( windowSize );
     bool isGameRunning = true;
     game.setup();
 
@@ -38,7 +36,7 @@ int main( int argc, char** argv )
             if ( event.type == sf::Event::Closed )
                 window.close();
 
-            inputHandler.handleInput( event, game );
+            game.handleInput( event );
         }
 
         // 5. Calculate delta time
