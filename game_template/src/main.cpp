@@ -22,15 +22,15 @@ int main( int argc, char** argv )
     auto lastTime = clock.getElapsedTime();
 
     // 3. Create game base classes
-    Game game( windowSize );
+    Game game;
     bool isGameRunning = true;
-    game.setup();
+    game.setup( windowSize );
 
-    while ( window.isOpen() )
+    while ( window.isOpen() && isGameRunning )
     {
         // 4. Handle events
         sf::Event event{};
-        while ( window.pollEvent( event ) && isGameRunning )
+        while ( window.pollEvent( event ) )
         {
             ImGui::SFML::ProcessEvent( event );
             if ( event.type == sf::Event::Closed )

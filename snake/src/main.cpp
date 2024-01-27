@@ -22,9 +22,9 @@ int main( int argc, char** argv )
     auto lastTime = clock.getElapsedTime();
 
     // 3. Create game base classes
-    Game game( windowSize );
+    Game game;
     bool isGameRunning = true;
-    game.setup();
+    game.setup( windowSize );
 
     while ( window.isOpen() && isGameRunning )
     {

@@ -1,12 +1,11 @@
 #include "Game.h"
 
-Game::Game( const sf::Vector2u& windowSize )
+Game::Game()
+{}
+
+void Game::setup( const sf::Vector2u& windowSize )
 {
     windowSize_ = windowSize;
-}
-
-void Game::setup()
-{
     snake_.setup( windowSize_ );
     gameBoard_.setup( windowSize_ );
     food_.respawn( windowSize_ );
