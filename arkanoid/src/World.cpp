@@ -244,7 +244,6 @@ void World::updateGameOverStatus()
         if ( m_bonuses.empty() )
         {
             m_isGameOver = true;
-            m_levelGenerator->changeLevel();
         }
     }
     else if ( isAllBallsOutOfBorder && !m_bricks.empty() )

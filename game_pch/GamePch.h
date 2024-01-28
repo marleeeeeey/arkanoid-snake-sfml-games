@@ -17,6 +17,7 @@
 #include <sstream>
 #include <utility>
 #include <map>
+#include <unordered_set>
 
 // ************* 3rd party ************
 #include <glm/glm.hpp>

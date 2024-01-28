@@ -28,14 +28,12 @@ std::vector<Level> LevelGenerator::getSymbolLevels()
 
     if ( loadedLevels.empty() )
     {
-        m_currentLevelNumber += glm::linearRand<int>( 0, standartLevels.size() - 1 );
+        MY_LOG_FMT( warn, "No levels loaded, using standart levels" );
         return standartLevels;
     }
-    else
-    {
-        m_currentLevelNumber += glm::linearRand<int>( 0, loadedLevels.size() - 1 );
-        return loadedLevels;
-    }
+
+    MY_LOG_FMT( info, "Loaded {} levels", loadedLevels.size() );
+    return loadedLevels;
 }
 
 void LevelGenerator::readLevelsFromTextFile()
@@ -45,6 +43,7 @@ void LevelGenerator::readLevelsFromTextFile()
 
     MY_LOG_FMT( info, "Config file loaded: {}", configPath.string() );
 
+    loadedLevels.clear();
     std::string line;
     Level level;
     while ( std::getline( infile, line ) )
@@ -124,17 +123,20 @@ LevelGenerator::LevelGenerator( std::shared_ptr<IObjectFactory> objectFactory, s
     m_brickZoneSize = { m_worldSize.x * wide, m_worldSize.y * 0.6f };
     m_brickZoneLeftTopPos = { m_worldSize.x * ( 1 - wide ) / 2, m_worldSize.y * 0.1f };
     m_brickGap = 5;
-    m_currentLevelNumber = 0;
     m_levels = getSymbolLevels();
+    m_randomLevelNumbers = NoRepeatableRandoms<size_t>( m_levels.size(), 0, m_levels.size() - 1 );
+    // m_randomLevelNumbers.sort(); // TODO: uncomment this line to make levels random
 }
 
-void LevelGenerator::changeLevel()
+void LevelGenerator::setNextLevel()
 {
-    m_currentLevelNumber += glm::linearRand<size_t>( 0, m_levels.size() - 1 );
+    m_currentLevelNumber = m_randomLevelNumbers.pull();
+    MY_LOG_FMT( info, "Level changed to {}/{}", m_currentLevelNumber + 1, m_levels.size() );
 }
 
 std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()
 {
+    setNextLevel();
     auto levelNumber = m_currentLevelNumber % m_levels.size();
     auto currentLevel = m_levels.at( levelNumber );
     sf::Vector2<size_t> resolutionInBricks;
@@ -176,9 +178,4 @@ std::vector<std::shared_ptr<IObject>> LevelGenerator::getLevelBricks()
     }
 
     return bricks;
-}
-
-void LevelGenerator::resetLevelProgress()
-{
-    m_currentLevelNumber = 0;
 }

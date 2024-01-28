@@ -39,3 +39,54 @@ T roundStep( T value, T step )
 {
     return step * glm::round( value / step );
 }
+
+template <typename T>
+class NoRepeatableRandoms
+{
+public:
+    NoRepeatableRandoms() = default;
+
+    explicit NoRepeatableRandoms( size_t capacity, T min, T max ) : capacity_( capacity ), min_( min ), max_( max )
+    {
+        initValues();
+    }
+
+    bool empty() const { return values_.empty(); }
+
+    T pull()
+    {
+        if ( values_.empty() )
+            initValues();
+
+        auto it = values_.begin();
+        auto number = *it;
+        values_.erase( it );
+        return number;
+    }
+
+    T pullOrThrow()
+    {
+        if ( values_.empty() )
+            throw std::logic_error( "NoRepeatableRandoms::pullOrThrow() - no more numbers" );
+
+        return pull();
+    }
+
+    void sort()
+    {
+        std::vector<T> sortedValues( values_.begin(), values_.end() );
+        std::sort( sortedValues.begin(), sortedValues.end() );
+        values_ = std::unordered_set<T>( sortedValues.begin(), sortedValues.end() );
+    }
+private:
+    void initValues()
+    {
+        while ( values_.size() != capacity_ )
+            values_.insert( glm::linearRand<T>( min_, max_ ) );
+    }
+
+    size_t capacity_;
+    std::unordered_set<T> values_;
+    T min_;
+    T max_;
+};
