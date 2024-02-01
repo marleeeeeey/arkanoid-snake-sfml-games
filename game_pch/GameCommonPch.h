@@ -24,12 +24,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/random.hpp>
 #include <imgui.h>
-#include <imgui-SFML.h>
 #include <magic_enum.hpp>
 #include <nlohmann/json.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <fmt/format.h>
 // ReSharper disable once CppInconsistentNaming
 using json = nlohmann::json;
