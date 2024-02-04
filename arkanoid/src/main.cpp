@@ -1,6 +1,6 @@
+#include "LevelGenerator.h"
 #include "ObjectFactory.h"
 #include "World.h"
-#include "LevelGenerator.h"
 
 /*
  * TODO: Create global class "NotificationManager" which will be responsible for showing notifications.
@@ -11,6 +11,8 @@
  * TODO: Create integration test to check if bonus objects are created correctly in runtime.
  * TODO: If ball do not touch paddle or bricks for 5 seconds, then M-bonus should be applied.
  * TODO: Add menu to select levels.
+ * TODO: Remove imgui from dependencies.
+ * TODO: Migrate to CMake and git submodules instead of vcpkg.
  */
 
 int main()
